@@ -12,7 +12,7 @@ const generateToken = (userId) => {
 // @access  Public
 export const register = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, preferredLanguage } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -29,6 +29,7 @@ export const register = async (req, res, next) => {
       name,
       email,
       passwordHash,
+      preferredLanguage: preferredLanguage || 'en',
     });
 
     const token = generateToken(user._id);
@@ -41,6 +42,7 @@ export const register = async (req, res, next) => {
           name: user.name,
           email: user.email,
           role: user.role,
+          preferredLanguage: user.preferredLanguage || 'en',
           createdAt: user.createdAt,
         },
         token,
@@ -85,6 +87,7 @@ export const login = async (req, res, next) => {
           name: user.name,
           email: user.email,
           role: user.role,
+          preferredLanguage: user.preferredLanguage || 'en',
           createdAt: user.createdAt,
         },
         token,
@@ -108,6 +111,7 @@ export const getMe = async (req, res) => {
         name: req.user.name,
         email: req.user.email,
         role: req.user.role,
+        preferredLanguage: req.user.preferredLanguage || 'en',
         createdAt: req.user.createdAt,
       },
     },

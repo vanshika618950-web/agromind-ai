@@ -9,51 +9,54 @@ import {
   Sparkles,
   ChevronRight,
 } from 'lucide-react';
-
-const AGENT_CONFIG = [
-  {
-    id: 'problem_analyzer',
-    number: '01',
-    name: 'Problem Analyzer Agent',
-    title: 'Understanding Crop Symptoms',
-    description: 'Autonomous symptom extraction, disease classification, and confidence scoring.',
-    icon: Brain,
-    color: 'emerald',
-  },
-  {
-    id: 'crop_reasoning',
-    number: '02',
-    name: 'Crop Reasoning Agent',
-    title: 'Analyzing Agricultural Context',
-    description: 'Cross-referencing soil chemistry, growth stage physiology, and nutrient needs.',
-    icon: Sprout,
-    color: 'teal',
-  },
-  {
-    id: 'risk_assessment',
-    number: '03',
-    name: 'Risk Assessment Agent',
-    title: 'Evaluating Severity & Urgency',
-    description: 'Assessing potential crop loss velocity and local agronomist escalation triggers.',
-    icon: ShieldAlert,
-    color: 'amber',
-  },
-  {
-    id: 'action_planner',
-    number: '04',
-    name: 'Action Planner Agent',
-    title: 'Synthesizing Action Roadmap',
-    description: 'Transforming multi-agent reasoning into a 7-day chronological farm action plan.',
-    icon: CalendarCheck2,
-    color: 'indigo',
-  },
-];
+import { useLanguage } from '../context/LanguageContext';
 
 export const AgentWorkflowTimeline = ({
   agentLogs = [],
   activeStep = null, // for live running animation (0, 1, 2, 3, or null when complete)
   isLiveSimulation = false,
 }) => {
+  const { t } = useLanguage();
+
+  const AGENT_CONFIG = [
+    {
+      id: 'problem_analyzer',
+      number: '01',
+      name: 'Problem Analyzer Agent',
+      title: t('newAdvisory.agent1Progress', 'Understanding Crop Symptoms'),
+      description: t('dashboard.agent1Task', 'Analyzing crop symptoms'),
+      icon: Brain,
+      color: 'emerald',
+    },
+    {
+      id: 'crop_reasoning',
+      number: '02',
+      name: 'Crop Reasoning Agent',
+      title: t('newAdvisory.agent2Progress', 'Analyzing Agricultural Context'),
+      description: t('dashboard.agent2Task', 'Evaluating crop and soil conditions'),
+      icon: Sprout,
+      color: 'teal',
+    },
+    {
+      id: 'risk_assessment',
+      number: '03',
+      name: 'Risk Assessment Agent',
+      title: t('newAdvisory.agent3Progress', 'Evaluating Severity & Urgency'),
+      description: t('dashboard.agent3Task', 'Calculating agricultural risk'),
+      icon: ShieldAlert,
+      color: 'amber',
+    },
+    {
+      id: 'action_planner',
+      number: '04',
+      name: 'Action Planner Agent',
+      title: t('newAdvisory.agent4Progress', 'Synthesizing Action Roadmap'),
+      description: t('dashboard.agent4Task', 'Preparing recommendations'),
+      icon: CalendarCheck2,
+      color: 'indigo',
+    },
+  ];
+
   return (
     <div className="bg-slate-900 text-white rounded-2xl p-6 sm:p-7 shadow-elevated border border-slate-800 relative overflow-hidden">
       {/* Background glow and subtle ambient pattern */}
@@ -65,20 +68,22 @@ export const AgentWorkflowTimeline = ({
         <div>
           <div className="flex items-center gap-2 text-agro-400 text-xs font-bold tracking-wider uppercase">
             <Sparkles className="w-4 h-4 animate-spin text-agro-400" />
-            <span>Autonomous Multi-Agent Pipeline</span>
+            <span>{t('newAdvisory.multiAgentActive', 'Autonomous Multi-Agent Pipeline')}</span>
           </div>
           <h3 className="text-xl sm:text-2xl font-bold font-display mt-1 text-white">
-            Agentic Collaboration Engine
+            {t('dashboard.agentActivityTitle', 'AI Agent Activity')}
           </h3>
           <p className="text-sm text-slate-400 mt-0.5">
-            4 specialized AI agents reasoning collaboratively in sequence.
+            {t('dashboard.agentActivitySubtitle', '4 specialized AI agents reasoning collaboratively in sequence.')}
           </p>
         </div>
 
         <div className="flex items-center gap-2 self-start sm:self-center">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-agro-500/15 text-agro-300 border border-agro-500/30">
             <span className="w-2 h-2 rounded-full bg-agro-400 animate-pulse" />
-            {isLiveSimulation ? 'Orchestration Active' : 'Pipeline Completed'}
+            {isLiveSimulation
+              ? t('newAdvisory.multiAgentActive', 'Orchestration Active')
+              : t('advisory.orchestrationVerified', '4 Agents Verified')}
           </span>
         </div>
       </div>
@@ -118,16 +123,16 @@ export const AgentWorkflowTimeline = ({
                   </span>
                   {isCurrent ? (
                     <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-agro-300 bg-agro-950/80 px-2 py-0.5 rounded border border-agro-500/40 animate-pulse">
-                      Processing...
+                      {t('common.running', 'Running...')}
                     </span>
                   ) : isDone ? (
                     <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">
                       <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                      Complete
+                      {t('common.completed', 'Complete')}
                     </span>
                   ) : (
                     <span className="text-[11px] font-mono text-slate-500">
-                      Pending
+                      {t('common.waiting', 'Pending')}
                     </span>
                   )}
                 </div>

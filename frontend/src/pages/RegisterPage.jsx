@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sprout, User, Mail, Lock, ArrowRight, AlertCircle, Shield } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
+import { LanguageSelector } from '../components/LanguageSelector';
 
 export const RegisterPage = () => {
   const [name, setName] = useState('');
@@ -11,6 +13,7 @@ export const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
 
   const { register } = useAuth();
+  const { language, t } = useLanguage();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -18,16 +21,16 @@ export const RegisterPage = () => {
     setError('');
 
     if (password.length < 8) {
-      setError('Password must be at least 8 characters long');
+      setError(t('auth.passwordMin', 'Password must be at least 8 characters long'));
       return;
     }
 
     setLoading(true);
     try {
-      await register(name, email, password);
+      await register(name, email, password, language);
       navigate('/dashboard', { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || err.message || 'Registration failed.');
+      setError(err.response?.data?.message || err.message || t('common.errorGeneric', 'Registration failed.'));
     } finally {
       setLoading(false);
     }
@@ -35,6 +38,11 @@ export const RegisterPage = () => {
 
   return (
     <div className="min-h-screen bg-darkBg-950 text-slate-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Top Language Selector */}
+      <div className="absolute top-6 right-6 z-20">
+        <LanguageSelector />
+      </div>
+
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center relative z-10">
@@ -47,12 +55,12 @@ export const RegisterPage = () => {
           </span>
         </Link>
         <h2 className="mt-4 text-2xl sm:text-3xl font-display font-bold text-white">
-          Create Your Farm Account
+          {t('auth.registerTitle', 'Create Your Farm Account')}
         </h2>
         <p className="mt-2 text-sm text-slate-400">
-          Already have an account?{' '}
+          {t('auth.haveAccount', 'Already have an account?')}{' '}
           <Link to="/login" className="font-semibold text-emerald-400 hover:text-emerald-300">
-            Sign in
+            {t('auth.loginLink', 'Sign in')}
           </Link>
         </p>
       </div>
@@ -69,7 +77,7 @@ export const RegisterPage = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                Full Name / Farm Identifier
+                {t('auth.nameLabel', 'Full Name / Farm Identifier')}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald-400">
@@ -80,7 +88,7 @@ export const RegisterPage = () => {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Ramesh Kumar"
+                  placeholder={t('auth.namePlaceholder', 'e.g. Ramesh Kumar')}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-emerald-500/20 bg-darkBg-950/80 text-white placeholder:text-slate-500 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/20 text-sm outline-none transition-all"
                 />
               </div>
@@ -88,7 +96,7 @@ export const RegisterPage = () => {
 
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                Email Address
+                {t('auth.emailLabel', 'Email Address')}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald-400">
@@ -99,7 +107,7 @@ export const RegisterPage = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="farmer@example.com"
+                  placeholder={t('auth.emailPlaceholder', 'farmer@example.com')}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-emerald-500/20 bg-darkBg-950/80 text-white placeholder:text-slate-500 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/20 text-sm outline-none transition-all"
                 />
               </div>
@@ -107,7 +115,7 @@ export const RegisterPage = () => {
 
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                Password (min 8 characters)
+                {t('auth.passwordLabel', 'Password (min 8 characters)')}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald-400">
@@ -119,7 +127,7 @@ export const RegisterPage = () => {
                   minLength={8}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder={t('auth.passwordPlaceholder', '••••••••')}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-emerald-500/20 bg-darkBg-950/80 text-white placeholder:text-slate-500 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/20 text-sm outline-none transition-all"
                 />
               </div>
@@ -132,10 +140,10 @@ export const RegisterPage = () => {
                 className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-lime-400 hover:from-emerald-400 hover:to-lime-300 text-black font-extrabold text-sm shadow-glow-green transition-all disabled:opacity-50"
               >
                 {loading ? (
-                  <span>Registering Account...</span>
+                  <span>{t('auth.registering', 'Registering Account...')}</span>
                 ) : (
                   <>
-                    <span>Create Account & Continue</span>
+                    <span>{t('auth.signUpBtn', 'Create Account & Continue')}</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
@@ -144,7 +152,7 @@ export const RegisterPage = () => {
           </form>
 
           <p className="mt-5 text-center text-xs text-slate-500">
-            Protected with bcrypt and JWT. Never shares your data.
+            {t('auth.securityNotice', 'Protected with bcrypt and JWT. Never shares your data.')}
           </p>
         </div>
       </div>

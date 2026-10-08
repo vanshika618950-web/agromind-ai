@@ -14,6 +14,8 @@ import {
   Globe,
   Cpu,
   CheckCircle2,
+  Volume2,
+  Camera,
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Hero3DScene from '../components/Hero3DScene';
@@ -23,8 +25,10 @@ import AgenticNetworkVisualization from '../components/AgenticNetworkVisualizati
 import VisualAIWorkflow from '../components/VisualAIWorkflow';
 import heroEnvironmentImg from '../assets/hero_3d_environment.jpg';
 import aiAssistantImg from '../assets/ai_assistant.jpg';
+import { useLanguage } from '../context/LanguageContext';
 
 export const LandingPage = () => {
+  const { t } = useLanguage();
   const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e) => {
@@ -70,7 +74,7 @@ export const LandingPage = () => {
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-400/40 text-emerald-300 text-xs sm:text-sm font-semibold mb-6 shadow-glow-green backdrop-blur-md"
           >
             <Sparkles className="w-4 h-4 text-emerald-400 animate-spin" />
-            <span>AGENTIC AI • AGRICULTURE INTELLIGENCE</span>
+            <span>{t('common.badge', 'AGENTIC AI • AGRICULTURE INTELLIGENCE')}</span>
           </motion.div>
 
           {/* Main Cinematic Heading */}
@@ -80,9 +84,9 @@ export const LandingPage = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-4xl sm:text-6xl lg:text-7xl font-display font-extrabold text-white tracking-tight leading-[1.08] max-w-5xl mx-auto"
           >
-            Smarter Farming.{' '}
+            {t('home.heroTitle1', 'Smarter Farming.')}{' '}
             <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-lime-300 bg-clip-text text-transparent">
-              Powered by Autonomous AI.
+              {t('home.heroTitle2', 'Powered by Autonomous AI.')}
             </span>
           </motion.h1>
 
@@ -93,8 +97,20 @@ export const LandingPage = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="mt-6 text-base sm:text-lg lg:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed font-normal"
           >
-            AgroMind AI analyzes crop conditions, evaluates risks, and creates actionable farming recommendations using a team of intelligent AI agents.
+            {t('home.heroSubtitle', 'AgroMind AI analyzes crop conditions, evaluates risks, and creates actionable farming recommendations using a team of intelligent AI agents.')}
           </motion.p>
+
+          {/* Prominent Farmer Voice & Photo Help Banner */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
+            className="mt-6 max-w-2xl mx-auto p-4 rounded-2xl bg-emerald-950/60 border border-emerald-400/30 text-emerald-200 text-sm sm:text-base font-medium flex items-center justify-center gap-3 shadow-glow-emerald backdrop-blur-md"
+          >
+            <Camera className="w-5 h-5 text-lime-400 shrink-0" />
+            <span>{t('home.farmerHelpMessage', "Don't know what's wrong with your crop? Just show us a photo, speak in your language, and AgroMind AI will help.")}</span>
+            <Volume2 className="w-5 h-5 text-cyan-400 shrink-0" />
+          </motion.div>
 
           {/* Floating Action Buttons */}
           <motion.div
@@ -107,14 +123,14 @@ export const LandingPage = () => {
               to="/advisory/new"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-black font-extrabold text-sm sm:text-base shadow-glow-emerald hover:shadow-glow-green transition-all hover:scale-105"
             >
-              <span>Start Free Advisory →</span>
+              <span>{t('home.ctaStart', 'Start Free Advisory →')}</span>
             </Link>
 
             <a
               href="#how-it-thinks"
               className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-4 rounded-2xl bg-darkBg-900/80 hover:bg-darkBg-850 text-slate-200 font-bold text-sm sm:text-base border border-emerald-500/30 hover:border-emerald-400/50 shadow-glass transition-all backdrop-blur-md"
             >
-              <span>Explore How It Works</span>
+              <span>{t('home.ctaExplore', 'Explore How It Works')}</span>
             </a>
           </motion.div>
 
@@ -136,14 +152,14 @@ export const LandingPage = () => {
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-white font-display">
-                  3D AI Agricultural Assistant
+                  {t('dashboard.aiAssistantTitle', '3D AI Agricultural Assistant')}
                 </span>
                 <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-950 px-1.5 py-0.2 rounded border border-emerald-500/30">
-                  ONLINE
+                  {t('common.active', 'ONLINE')}
                 </span>
               </div>
               <p className="text-xs text-slate-300 mt-0.5">
-                Multi-agent collective synthesizing crop physiology, soil dynamics, and 7-day action roadmaps.
+                {t('home.farmerHelpMessage', 'Multi-agent collective synthesizing crop physiology, soil dynamics, and 7-day action roadmaps.')}
               </p>
             </div>
           </motion.div>
@@ -176,7 +192,7 @@ export const LandingPage = () => {
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 text-xs font-semibold mb-3">
             <Cpu className="w-3.5 h-3.5" />
-            <span>Enterprise Agronomic Standards</span>
+            <span>{t('common.badge', 'Enterprise Agronomic Standards')}</span>
           </div>
           <h2 className="text-3xl sm:text-5xl font-display font-extrabold text-white tracking-tight">
             Designed for High-Impact Agriculture
@@ -244,7 +260,7 @@ export const LandingPage = () => {
               to="/register"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-base shadow-glow-emerald transition-all hover:scale-105"
             >
-              <span>Get Started Free</span>
+              <span>{t('common.register', 'Get Started')}</span>
               <ArrowRight className="w-5 h-5" />
             </Link>
           </div>
@@ -268,9 +284,9 @@ export const LandingPage = () => {
 
           <div className="p-4 rounded-2xl bg-darkBg-900/60 border border-slate-800 text-slate-400 leading-relaxed text-[11px]">
             <span className="font-bold text-emerald-400 block mb-1">
-              Safety & Decision-Support Disclaimer:
+              {t('advisory.disclaimerTitle', 'Safety & Decision-Support Disclaimer')}:
             </span>
-            AI-generated agricultural guidance is provided for informational and decision-support purposes only. Conditions vary by location and farm. For severe crop damage, suspected disease outbreaks, or uncertain conditions, consult a qualified local agricultural expert before taking significant action.
+            {t('advisory.disclaimerText', 'AI-generated agricultural guidance is provided for informational and decision-support purposes only. Conditions vary by location and farm. For severe crop damage, suspected disease outbreaks, or uncertain conditions, consult a qualified local agricultural expert before taking significant action.')}
           </div>
         </div>
       </footer>

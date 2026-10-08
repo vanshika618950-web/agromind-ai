@@ -1,10 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Mail, Shield, Calendar, LogOut, Lock, Database } from 'lucide-react';
+import { User, Mail, Shield, Calendar, LogOut, Globe } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
+import { LanguageSelector } from '../components/LanguageSelector';
 
 export const ProfilePage = () => {
   const { user, logout } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -15,13 +18,17 @@ export const ProfilePage = () => {
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       {/* Page Header */}
-      <div className="pb-4 border-b border-emerald-500/15">
-        <h1 className="text-2xl sm:text-3xl font-display font-extrabold text-white">
-          User & Farm Profile
-        </h1>
-        <p className="text-sm text-slate-400 mt-1">
-          Manage your account credentials, authorization status, and cryptographic session isolation.
-        </p>
+      <div className="pb-4 border-b border-emerald-500/15 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-display font-extrabold text-white">
+            {t('common.profile', 'User & Farm Profile')}
+          </h1>
+          <p className="text-sm text-slate-400 mt-1">
+            Manage your account credentials, preferred language, and session settings.
+          </p>
+        </div>
+
+        <LanguageSelector />
       </div>
 
       {/* Profile Card */}
@@ -43,7 +50,7 @@ export const ProfilePage = () => {
           <div className="p-4 rounded-2xl bg-darkBg-950/80 border border-slate-800 flex items-start gap-3">
             <Mail className="w-5 h-5 text-emerald-400 mt-0.5" />
             <div>
-              <span className="text-xs font-bold uppercase text-slate-400 block">Email Address</span>
+              <span className="text-xs font-bold uppercase text-slate-400 block">{t('auth.emailLabel', 'Email Address')}</span>
               <span className="text-sm font-semibold text-white">{user?.email}</span>
             </div>
           </div>
@@ -83,7 +90,7 @@ export const ProfilePage = () => {
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-rose-950/30 hover:bg-rose-950/60 text-rose-300 font-semibold text-sm border border-rose-500/30 transition-colors"
           >
             <LogOut className="w-4 h-4" />
-            <span>Sign Out of Account</span>
+            <span>{t('common.logout', 'Sign Out of Account')}</span>
           </button>
         </div>
       </div>

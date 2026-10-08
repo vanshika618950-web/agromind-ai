@@ -3,10 +3,13 @@ import { Outlet, Link } from 'react-router-dom';
 import { Menu, Bell, PlusCircle, Settings, User } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
+import LanguageSelector from '../components/LanguageSelector';
 
 export const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   const firstName = user?.name ? user.name.split(' ')[0] : 'Akshaya';
 
@@ -18,7 +21,7 @@ export const DashboardLayout = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 lg:pl-64">
         {/* Top Header Bar */}
-        <header className="h-16 sm:h-20 bg-darkBg-900/80 backdrop-blur-xl border-b border-emerald-500/15 sticky top-0 z-30 flex items-center justify-between px-4 sm:px-8">
+        <header className="h-16 sm:h-20 bg-darkBg-900/80 backdrop-blur-xl border-b border-emerald-500/15 sticky top-0 z-30 flex items-center justify-between px-3 sm:px-8">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -28,24 +31,27 @@ export const DashboardLayout = () => {
             </button>
             <div>
               <h2 className="text-sm sm:text-base font-bold text-white font-display">
-                Good Morning, {firstName} 👋
+                {t('dashboard.greeting', 'Good Morning')}, {firstName} 👋
               </h2>
               <p className="text-[11px] text-emerald-400/90 font-medium">
-                Your AI farming assistant is ready.
+                {t('dashboard.subtitle', 'Your AI farming assistant is ready.')}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Language Selector */}
+            <LanguageSelector />
+
             <Link
               to="/advisory/new"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-emerald-500 hover:bg-emerald-400 text-black shadow-glow-green transition-all hover:scale-105"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-emerald-500 hover:bg-emerald-400 text-black shadow-glow-green transition-all hover:scale-105"
             >
               <PlusCircle className="w-4 h-4" />
-              <span>New Advisory</span>
+              <span>{t('common.newAdvisory', 'New Advisory')}</span>
             </Link>
 
-            <div className="h-6 w-px bg-slate-800 hidden sm:block" />
+            <div className="h-6 w-px bg-slate-800 hidden md:block" />
 
             {/* Notification & Settings Icon Buttons */}
             <div className="flex items-center gap-1 text-slate-400">

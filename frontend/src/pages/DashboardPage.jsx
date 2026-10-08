@@ -21,12 +21,14 @@ import {
 } from 'lucide-react';
 import { dashboardApi } from '../services/dashboardApi';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import RiskBadge from '../components/RiskBadge';
 import LoadingState from '../components/LoadingState';
 import EmptyState from '../components/EmptyState';
 
 export const DashboardPage = () => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -48,7 +50,7 @@ export const DashboardPage = () => {
   }, []);
 
   if (loading) {
-    return <LoadingState message="Aggregating farm statistics and agent logs..." />;
+    return <LoadingState message={t('common.loading', 'Aggregating farm statistics and agent logs...')} />;
   }
 
   const {
@@ -75,13 +77,13 @@ export const DashboardPage = () => {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950 border border-emerald-400/40 text-emerald-400 text-xs font-semibold mb-3">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Multi-Agent Collective Active</span>
+              <span>{t('newAdvisory.multiAgentActive', 'Multi-Agent Collective Active')}</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-display font-extrabold text-white">
-              Farm Decision Telemetry
+              {t('common.dashboard', 'Farm Decision Telemetry')}
             </h1>
             <p className="mt-1 text-sm text-slate-300 max-w-xl">
-              Continuous monitoring of crop health, soil dynamics, and autonomous agent executions.
+              {t('dashboard.subtitle', 'Continuous monitoring of crop health, soil dynamics, and autonomous agent executions.')}
             </p>
           </div>
 
@@ -90,7 +92,7 @@ export const DashboardPage = () => {
             className="self-start md:self-center inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-sm shadow-glow-green transition-all hover:scale-105"
           >
             <PlusCircle className="w-4 h-4" />
-            <span>Start New Crop Advisory</span>
+            <span>{t('dashboard.quickStart', 'Start New Crop Advisory')}</span>
           </Link>
         </div>
       </div>
@@ -106,7 +108,7 @@ export const DashboardPage = () => {
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Total Advisories
+              {t('dashboard.statTotalAdvisories', 'Total Advisories')}
             </span>
             <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
               <Sprout className="w-5 h-5" />
@@ -128,7 +130,7 @@ export const DashboardPage = () => {
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              High Risk Cases
+              {t('dashboard.statHighRisk', 'High Risk Cases')}
             </span>
             <div className="w-10 h-10 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center border border-rose-500/30">
               <AlertTriangle className="w-5 h-5" />
@@ -150,7 +152,7 @@ export const DashboardPage = () => {
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              AI Confidence
+              {t('dashboard.statConfidence', 'AI Confidence')}
             </span>
             <div className="w-10 h-10 rounded-2xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center border border-cyan-500/30">
               <Activity className="w-5 h-5" />
@@ -172,7 +174,7 @@ export const DashboardPage = () => {
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Agents Executed
+              {t('dashboard.statAgentsExecuted', 'Agents Executed')}
             </span>
             <div className="w-10 h-10 rounded-2xl bg-lime-500/20 text-lime-400 flex items-center justify-center border border-lime-500/30">
               <Cpu className="w-5 h-5" />
@@ -189,7 +191,7 @@ export const DashboardPage = () => {
       </div>
 
       {/* ====================================================
-          AI AGENT ACTIVITY CARD (MANDATORY REQUIREMENT)
+          AI AGENT ACTIVITY CARD
       ==================================================== */}
       <div className="hologram-card rounded-3xl p-6 sm:p-8 border border-emerald-500/25">
         <div className="flex items-center justify-between pb-4 border-b border-emerald-500/15">
@@ -199,16 +201,16 @@ export const DashboardPage = () => {
             </div>
             <div>
               <h3 className="text-lg font-bold font-display text-white">
-                AI Agent Activity Pipeline
+                {t('dashboard.agentActivityTitle', 'AI Agent Activity Pipeline')}
               </h3>
               <p className="text-xs text-slate-400">
-                Live autonomous orchestration sequence
+                {t('dashboard.agentActivitySubtitle', 'Live autonomous orchestration sequence')}
               </p>
             </div>
           </div>
 
           <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-950 px-3 py-1 rounded-full border border-emerald-500/30">
-            Pipeline Active
+            {t('common.active', 'Pipeline Active')}
           </span>
         </div>
 
@@ -218,12 +220,12 @@ export const DashboardPage = () => {
             <div className="flex items-center justify-between mb-2">
               <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/30">
                 <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                Completed
+                {t('common.completed', 'Completed')}
               </span>
               <span className="text-xs font-mono text-slate-400">12s</span>
             </div>
             <h4 className="font-bold text-white text-sm">Problem Analyzer</h4>
-            <p className="text-xs text-slate-400 mt-1">Analyzing crop symptoms</p>
+            <p className="text-xs text-slate-400 mt-1">{t('dashboard.agent1Task', 'Analyzing crop symptoms')}</p>
           </div>
 
           {/* Agent 2: Crop Reasoning */}
@@ -231,37 +233,37 @@ export const DashboardPage = () => {
             <div className="flex items-center justify-between mb-2">
               <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/30">
                 <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                Completed
+                {t('common.completed', 'Completed')}
               </span>
               <span className="text-xs font-mono text-slate-400">18s</span>
             </div>
             <h4 className="font-bold text-white text-sm">Crop Reasoning</h4>
-            <p className="text-xs text-slate-400 mt-1">Evaluating crop and soil conditions</p>
+            <p className="text-xs text-slate-400 mt-1">{t('dashboard.agent2Task', 'Evaluating crop and soil conditions')}</p>
           </div>
 
-          {/* Agent 3: Risk Assessment (Running) */}
+          {/* Agent 3: Risk Assessment */}
           <div className="p-4 rounded-2xl bg-darkBg-900 border border-emerald-400 shadow-glow-green relative animate-pulse">
             <div className="flex items-center justify-between mb-2">
               <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-300 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-400/40">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping mr-1" />
-                Running
+                {t('common.running', 'Running')}
               </span>
               <span className="text-xs font-mono text-emerald-400">8s</span>
             </div>
             <h4 className="font-bold text-white text-sm">Risk Assessment</h4>
-            <p className="text-xs text-slate-300 mt-1">Calculating agricultural risk</p>
+            <p className="text-xs text-slate-300 mt-1">{t('dashboard.agent3Task', 'Calculating agricultural risk')}</p>
           </div>
 
-          {/* Agent 4: Action Planner (Waiting) */}
+          {/* Agent 4: Action Planner */}
           <div className="p-4 rounded-2xl bg-darkBg-950/40 border border-slate-800/80 relative opacity-60">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[11px] font-mono text-slate-400">
-                ○ Waiting
+                ○ {t('common.waiting', 'Waiting')}
               </span>
               <span className="text-xs font-mono text-slate-500">—</span>
             </div>
             <h4 className="font-bold text-slate-300 text-sm">Action Planner</h4>
-            <p className="text-xs text-slate-400 mt-1">Preparing recommendations</p>
+            <p className="text-xs text-slate-400 mt-1">{t('dashboard.agent4Task', 'Preparing recommendations')}</p>
           </div>
         </div>
       </div>
@@ -275,25 +277,25 @@ export const DashboardPage = () => {
           <div className="flex items-center justify-between pb-2 border-b border-emerald-500/15">
             <div>
               <h2 className="text-lg font-bold font-display text-white">
-                Recent Crop Advisories
+                {t('dashboard.recentAdvisories', 'Recent Crop Advisories')}
               </h2>
               <p className="text-xs text-slate-400">
-                Inspect synthesized 7-day action plans and risk ratings
+                {t('advisory.actionPlanSubtitle', 'Inspect synthesized 7-day action plans and risk ratings')}
               </p>
             </div>
             <Link
               to="/history"
               className="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
             >
-              <span>View All Archive</span>
+              <span>{t('common.history', 'View All Archive')}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
           {recentAdvisories.length === 0 ? (
             <EmptyState
-              title="No Advisories in Record"
-              description="Submit your first crop inquiry to trigger the autonomous multi-agent reasoning pipeline."
+              title={t('dashboard.noAdvisoriesYet', 'No Advisories in Record')}
+              description={t('home.farmerHelpMessage', 'Submit your first crop inquiry to trigger the autonomous multi-agent reasoning pipeline.')}
             />
           ) : (
             <div className="space-y-3.5">
@@ -338,7 +340,7 @@ export const DashboardPage = () => {
                     to={`/advisory/${adv._id}`}
                     className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-darkBg-950 hover:bg-emerald-500 hover:text-black text-slate-200 border border-emerald-500/30 transition-all"
                   >
-                    <span>Inspect Advisory</span>
+                    <span>{t('history.reviewAdvisory', 'Inspect Advisory')}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
@@ -351,7 +353,7 @@ export const DashboardPage = () => {
         <div className="lg:col-span-4 space-y-6">
           <div className="hologram-card rounded-3xl p-6 border border-emerald-500/25">
             <h3 className="font-bold text-base text-white font-display">
-              Inquiries by Category
+              {t('analytics.categoryTitle', 'Inquiries by Category')}
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
               Agricultural problem distribution

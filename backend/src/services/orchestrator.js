@@ -9,17 +9,18 @@ import mongoose from 'mongoose';
 export const orchestrateAdvisory = async (cropData, userId) => {
   const temporaryAdvisoryId = new mongoose.Types.ObjectId();
   const agentLogs = [];
+  const language = cropData.language || 'en';
 
   try {
     // Stage 1: Problem Analyzer Agent
-    console.log('[Orchestrator] Executing Agent 1: Problem Analyzer...');
-    const stage1Result = await runProblemAnalyzer(cropData);
+    console.log(`[Orchestrator] Executing Agent 1: Problem Analyzer (Lang: ${language})...`);
+    const stage1Result = await runProblemAnalyzer(cropData, language);
     agentLogs.push({
       advisoryId: temporaryAdvisoryId,
       userId,
       agentName: 'problem_analyzer',
       task: 'Understand crop symptoms, possible causes, categorize and assign confidence',
-      input: cropData,
+      input: { ...cropData, language },
       output: stage1Result.output,
       status: 'success',
       executionTimeMs: stage1Result.executionTimeMs,
@@ -27,14 +28,14 @@ export const orchestrateAdvisory = async (cropData, userId) => {
     const problemAnalysis = stage1Result.output;
 
     // Stage 2: Crop Reasoning Agent
-    console.log('[Orchestrator] Executing Agent 2: Crop Reasoning...');
-    const stage2Result = await runCropReasoning(cropData, problemAnalysis);
+    console.log(`[Orchestrator] Executing Agent 2: Crop Reasoning (Lang: ${language})...`);
+    const stage2Result = await runCropReasoning(cropData, problemAnalysis, language);
     agentLogs.push({
       advisoryId: temporaryAdvisoryId,
       userId,
       agentName: 'crop_reasoning',
       task: 'Analyze soil, stage, nutrient dynamics and generate recommendations',
-      input: { cropData, problemAnalysis },
+      input: { cropData, problemAnalysis, language },
       output: stage2Result.output,
       status: 'success',
       executionTimeMs: stage2Result.executionTimeMs,
@@ -42,14 +43,14 @@ export const orchestrateAdvisory = async (cropData, userId) => {
     const cropReasoning = stage2Result.output;
 
     // Stage 3: Risk Assessment Agent
-    console.log('[Orchestrator] Executing Agent 3: Risk Assessment...');
-    const stage3Result = await runRiskAssessment(cropData, problemAnalysis, cropReasoning);
+    console.log(`[Orchestrator] Executing Agent 3: Risk Assessment (Lang: ${language})...`);
+    const stage3Result = await runRiskAssessment(cropData, problemAnalysis, cropReasoning, language);
     agentLogs.push({
       advisoryId: temporaryAdvisoryId,
       userId,
       agentName: 'risk_assessment',
       task: 'Evaluate severity, urgency, risk factors and expert consultation threshold',
-      input: { cropData, problemAnalysis, cropReasoning },
+      input: { cropData, problemAnalysis, cropReasoning, language },
       output: stage3Result.output,
       status: 'success',
       executionTimeMs: stage3Result.executionTimeMs,
@@ -57,14 +58,14 @@ export const orchestrateAdvisory = async (cropData, userId) => {
     const riskAssessment = stage3Result.output;
 
     // Stage 4: Action Planner Agent
-    console.log('[Orchestrator] Executing Agent 4: Action Planner...');
-    const stage4Result = await runActionPlanner(cropData, problemAnalysis, cropReasoning, riskAssessment);
+    console.log(`[Orchestrator] Executing Agent 4: Action Planner (Lang: ${language})...`);
+    const stage4Result = await runActionPlanner(cropData, problemAnalysis, cropReasoning, riskAssessment, language);
     agentLogs.push({
       advisoryId: temporaryAdvisoryId,
       userId,
       agentName: 'action_planner',
       task: 'Generate prioritized chronological action roadmap and final synthesis',
-      input: { cropData, problemAnalysis, cropReasoning, riskAssessment },
+      input: { cropData, problemAnalysis, cropReasoning, riskAssessment, language },
       output: stage4Result.output,
       status: 'success',
       executionTimeMs: stage4Result.executionTimeMs,
@@ -83,6 +84,7 @@ export const orchestrateAdvisory = async (cropData, userId) => {
       irrigation: cropData.irrigation,
       weather: cropData.weather || '',
       additionalInformation: cropData.additionalInformation || '',
+      language,
 
       category: problemAnalysis.category || 'Crop Health',
       problemAnalysis: {
@@ -117,6 +119,10 @@ export const orchestrateAdvisory = async (cropData, userId) => {
       recommendations: cropReasoning.recommendations || [],
       irrigationAdvice: cropReasoning.irrigationAdvice || '',
       nutrientAdvice: cropReasoning.nutrientAdvice || '',
+      prescription: cropReasoning.prescription || {
+        diagnosis: problemAnalysis.identifiedProblem || `${cropData.crop} Treatment Protocol`,
+        items: [],
+      },
       riskLevel: riskAssessment.riskLevel || 'MEDIUM',
       riskReason: riskAssessment.riskReason || '',
       urgency: riskAssessment.urgency || 'Within 24-48 hours',

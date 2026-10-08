@@ -30,6 +30,11 @@ const userSchema = new mongoose.Schema(
       enum: ['farmer', 'agronomist', 'admin'],
       default: 'farmer',
     },
+    preferredLanguage: {
+      type: String,
+      enum: ['en', 'te', 'hi'],
+      default: 'en',
+    },
   },
   {
     timestamps: true,

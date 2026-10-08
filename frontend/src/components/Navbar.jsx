@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sprout, Menu, X, ArrowRight, LogOut, LayoutDashboard, PlusCircle, BarChart3 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
+import LanguageSelector from './LanguageSelector';
 
 export const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isAuthenticated, logout } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -27,60 +30,63 @@ export const Navbar = () => {
                 AgroMind<span className="text-emerald-400 font-black">.AI</span>
               </span>
               <span className="hidden sm:block text-[9px] uppercase tracking-widest text-emerald-400/80 font-bold -mt-1">
-                AGENTIC AI ADVISORY
+                {t('common.badge', 'AGENTIC AI ADVISORY')}
               </span>
             </div>
           </Link>
 
           {/* Top Desktop Navigation Links */}
-          <div className="hidden md:flex items-center gap-7">
+          <div className="hidden md:flex items-center gap-6">
             <Link
               to="/"
               className="text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors"
             >
-              Home
+              {t('common.home', 'Home')}
             </Link>
             <a
               href="#how-it-thinks"
               className="text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors"
             >
-              How It Works
+              {t('common.howItWorks', 'How It Works')}
             </a>
             <a
               href="#agents"
               className="text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors"
             >
-              AI Agents
+              {t('common.aiAgents', 'AI Agents')}
             </a>
             <a
               href="#features"
               className="text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors"
             >
-              Features
+              {t('common.features', 'Features')}
             </a>
 
+            {/* Language Selector */}
+            <LanguageSelector />
+
             {isAuthenticated ? (
-              <div className="flex items-center gap-3 pl-4 border-l border-slate-800">
+              <div className="flex items-center gap-3 pl-3 border-l border-slate-800">
                 <Link
                   to="/dashboard"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-emerald-950/40 transition-all border border-transparent hover:border-emerald-500/20"
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-emerald-950/40 transition-all border border-transparent hover:border-emerald-500/20"
                 >
                   <LayoutDashboard className="w-4 h-4 text-emerald-400" />
-                  Dashboard
+                  {t('common.dashboard', 'Dashboard')}
                 </Link>
                 <Link
                   to="/analytics"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-emerald-950/40 transition-all border border-transparent hover:border-emerald-500/20"
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-emerald-950/40 transition-all border border-transparent hover:border-emerald-500/20"
                 >
                   <BarChart3 className="w-4 h-4 text-cyan-400" />
-                  Analytics
+                  {t('common.analytics', 'Analytics')}
                 </Link>
                 <Link
                   to="/advisory/new"
                   className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-black shadow-glow-green transition-all"
                 >
                   <PlusCircle className="w-4 h-4" />
-                  New Advisory
+                  {t('common.newAdvisory', 'New Advisory')}
                 </Link>
                 <button
                   onClick={handleLogout}
@@ -91,29 +97,31 @@ export const Navbar = () => {
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-3 pl-4 border-l border-slate-800">
+              <div className="flex items-center gap-3 pl-3 border-l border-slate-800">
                 <Link
                   to="/login"
-                  className="px-4 py-2 text-sm font-semibold text-slate-300 hover:text-emerald-400 transition-colors"
+                  className="px-3.5 py-2 text-sm font-semibold text-slate-300 hover:text-emerald-400 transition-colors"
                 >
-                  Login
+                  {t('common.login', 'Login')}
                 </Link>
                 <Link
                   to="/register"
-                  className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-bold bg-emerald-500 hover:bg-emerald-400 text-black shadow-glow-green hover:scale-105 transition-all"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold bg-emerald-500 hover:bg-emerald-400 text-black shadow-glow-green hover:scale-105 transition-all"
                 >
-                  <span>Get Started</span>
+                  <span>{t('common.register', 'Get Started')}</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
             )}
           </div>
 
-          {/* Mobile menu button */}
-          <div className="flex md:hidden">
+          {/* Mobile menu and Language Selector */}
+          <div className="flex md:hidden items-center gap-2">
+            <LanguageSelector />
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-900"
+              aria-label="Toggle Menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -129,28 +137,28 @@ export const Navbar = () => {
             onClick={() => setMobileMenuOpen(false)}
             className="block px-3 py-2 text-sm font-medium text-slate-300 hover:text-white"
           >
-            Home
+            {t('common.home', 'Home')}
           </Link>
           <a
             href="#how-it-thinks"
             onClick={() => setMobileMenuOpen(false)}
             className="block px-3 py-2 text-sm font-medium text-slate-300 hover:text-white"
           >
-            How It Works
+            {t('common.howItWorks', 'How It Works')}
           </a>
           <a
             href="#agents"
             onClick={() => setMobileMenuOpen(false)}
             className="block px-3 py-2 text-sm font-medium text-slate-300 hover:text-white"
           >
-            AI Agents
+            {t('common.aiAgents', 'AI Agents')}
           </a>
           <a
             href="#features"
             onClick={() => setMobileMenuOpen(false)}
             className="block px-3 py-2 text-sm font-medium text-slate-300 hover:text-white"
           >
-            Features
+            {t('common.features', 'Features')}
           </a>
 
           {isAuthenticated ? (
@@ -161,7 +169,7 @@ export const Navbar = () => {
                 className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-slate-200"
               >
                 <LayoutDashboard className="w-4 h-4 text-emerald-400" />
-                Dashboard
+                {t('common.dashboard', 'Dashboard')}
               </Link>
               <Link
                 to="/advisory/new"
@@ -169,7 +177,7 @@ export const Navbar = () => {
                 className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-emerald-400"
               >
                 <PlusCircle className="w-4 h-4" />
-                New Advisory
+                {t('common.newAdvisory', 'New Advisory')}
               </Link>
               <Link
                 to="/analytics"
@@ -177,7 +185,7 @@ export const Navbar = () => {
                 className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-cyan-400"
               >
                 <BarChart3 className="w-4 h-4" />
-                Analytics
+                {t('common.analytics', 'Analytics')}
               </Link>
               <button
                 onClick={() => {
@@ -187,7 +195,7 @@ export const Navbar = () => {
                 className="flex items-center gap-2 w-full text-left px-3 py-2 text-sm font-medium text-rose-400"
               >
                 <LogOut className="w-4 h-4" />
-                Sign Out
+                {t('common.logout', 'Sign Out')}
               </button>
             </div>
           ) : (
@@ -197,14 +205,14 @@ export const Navbar = () => {
                 onClick={() => setMobileMenuOpen(false)}
                 className="block text-center py-2.5 rounded-xl border border-slate-700 font-semibold text-slate-200 text-sm"
               >
-                Login
+                {t('common.login', 'Login')}
               </Link>
               <Link
                 to="/register"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block text-center py-2.5 rounded-xl bg-emerald-500 text-black font-bold text-sm shadow-glow-green"
               >
-                Get Started
+                {t('common.register', 'Get Started')}
               </Link>
             </div>
           )}

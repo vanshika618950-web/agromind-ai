@@ -1,54 +1,47 @@
 import React, { useState } from 'react';
-import { Zap, Calendar, Clock, CheckCircle, ShieldAlert, Sparkles } from 'lucide-react';
+import { Zap, Calendar, Clock, CheckCircle, ShieldAlert } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export const ActionPlanView = ({ actionPlan = {} }) => {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('all');
 
   const stages = [
     {
-      id: 'immediate',
-      label: 'Immediate',
-      badge: 'Right Now',
-      color: 'rose',
-      icon: Zap,
-      items: actionPlan.immediate || [],
-      desc: 'Critical diagnostic & stabilization steps before leaving the plot',
-    },
-    {
       id: 'today',
-      label: 'Today',
-      badge: 'Day 1',
+      label: t('advisory.today', 'Today'),
+      badge: t('advisory.todayTitle', 'Immediate Actions'),
       color: 'amber',
       icon: Clock,
       items: actionPlan.today || [],
-      desc: 'Immediate adjustments to irrigation, soil, and scouting protocols',
+      desc: t('advisory.todayTitle', 'Immediate adjustments to irrigation, soil, and scouting protocols'),
     },
     {
       id: 'next3Days',
-      label: 'Next 3 Days',
-      badge: 'Days 2-3',
+      label: t('advisory.next3Days', 'Next 3 Days'),
+      badge: t('advisory.next3DaysTitle', 'Monitoring & Tuning'),
       color: 'blue',
       icon: Calendar,
       items: actionPlan.next3Days || [],
-      desc: 'Targeted biological or nutritional interventions & symptom monitoring',
+      desc: t('advisory.next3DaysTitle', 'Targeted biological or nutritional interventions & symptom monitoring'),
     },
     {
       id: 'next7Days',
-      label: 'Next 7 Days',
-      badge: 'Days 4-7',
+      label: t('advisory.next7Days', 'Next 7 Days'),
+      badge: t('advisory.next7DaysTitle', 'Recovery Check'),
       color: 'indigo',
       icon: CheckCircle,
       items: actionPlan.next7Days || [],
-      desc: 'Vigor reassessment and verification of symptom remission',
+      desc: t('advisory.next7DaysTitle', 'Vigor reassessment and verification of symptom remission'),
     },
     {
       id: 'preventive',
-      label: 'Preventive',
-      badge: 'Long-term',
+      label: t('advisory.prevention', 'Preventive'),
+      badge: t('advisory.preventionTitle', 'Long-term Health'),
       color: 'emerald',
       icon: ShieldAlert,
       items: actionPlan.preventive || [],
-      desc: 'Systemic soil health, crop rotation, and preventive defenses',
+      desc: t('advisory.preventionTitle', 'Systemic soil health, crop rotation, and preventive defenses'),
     },
   ];
 
@@ -58,16 +51,16 @@ export const ActionPlanView = ({ actionPlan = {} }) => {
   return (
     <div className="space-y-6">
       {/* Stage Filter Buttons */}
-      <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-100/80 rounded-xl border border-slate-200">
+      <div className="flex flex-wrap items-center gap-2 p-1.5 bg-darkBg-950/80 rounded-xl border border-emerald-500/20">
         <button
           onClick={() => setActiveTab('all')}
           className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
             activeTab === 'all'
-              ? 'bg-white text-slate-900 shadow-sm'
-              : 'text-slate-600 hover:text-slate-900'
+              ? 'bg-emerald-500 text-black shadow-sm font-bold'
+              : 'text-slate-300 hover:text-white'
           }`}
         >
-          Complete Roadmap (All Stages)
+          {t('advisory.actionPlan', 'Complete Roadmap')}
         </button>
         {stages.map((stage) => {
           const Icon = stage.icon;
@@ -77,13 +70,13 @@ export const ActionPlanView = ({ actionPlan = {} }) => {
               onClick={() => setActiveTab(stage.id)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 activeTab === stage.id
-                  ? 'bg-white text-slate-900 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-emerald-500 text-black shadow-sm font-bold'
+                  : 'text-slate-300 hover:text-white'
               }`}
             >
               <Icon className="w-3.5 h-3.5" />
               <span>{stage.label}</span>
-              <span className="text-[10px] px-1.5 py-0.2 bg-slate-100 rounded-full text-slate-500">
+              <span className="text-[10px] px-1.5 py-0.2 bg-emerald-950 rounded-full text-emerald-400">
                 {stage.items.length}
               </span>
             </button>
@@ -95,38 +88,22 @@ export const ActionPlanView = ({ actionPlan = {} }) => {
       <div className="space-y-4">
         {filteredStages.map((stage) => {
           const Icon = stage.icon;
-          const borderClasses = {
-            rose: 'border-l-rose-500 bg-rose-50/20',
-            amber: 'border-l-amber-500 bg-amber-50/20',
-            blue: 'border-l-sky-500 bg-sky-50/20',
-            indigo: 'border-l-indigo-500 bg-indigo-50/20',
-            emerald: 'border-l-emerald-500 bg-emerald-50/20',
-          }[stage.color] || 'border-l-emerald-500';
-
-          const badgeClasses = {
-            rose: 'bg-rose-100 text-rose-800 border-rose-200',
-            amber: 'bg-amber-100 text-amber-800 border-amber-200',
-            blue: 'bg-sky-100 text-sky-800 border-sky-200',
-            indigo: 'bg-indigo-100 text-indigo-800 border-indigo-200',
-            emerald: 'bg-emerald-100 text-emerald-800 border-emerald-200',
-          }[stage.color] || 'bg-slate-100 text-slate-800';
-
           return (
             <div
               key={stage.id}
-              className={`rounded-xl border border-slate-200/90 border-l-4 p-5 shadow-soft bg-white ${borderClasses}`}
+              className="rounded-2xl border border-emerald-500/20 border-l-4 p-5 hologram-card"
             >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-emerald-500/15">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-lg bg-white shadow-sm border border-slate-200">
-                    <Icon className="w-4 h-4 text-slate-700" />
+                  <div className="p-2 rounded-lg bg-darkBg-950 border border-emerald-500/30 text-emerald-400">
+                    <Icon className="w-4 h-4" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900 text-base">{stage.label}</h4>
-                    <p className="text-xs text-slate-500">{stage.desc}</p>
+                    <h4 className="font-bold text-white text-base">{stage.label}</h4>
+                    <p className="text-xs text-slate-400">{stage.desc}</p>
                   </div>
                 </div>
-                <span className={`self-start sm:self-center text-xs font-semibold px-2.5 py-0.5 rounded-full border ${badgeClasses}`}>
+                <span className="self-start sm:self-center text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-500/30">
                   {stage.badge}
                 </span>
               </div>
@@ -138,9 +115,9 @@ export const ActionPlanView = ({ actionPlan = {} }) => {
                   stage.items.map((item, idx) => (
                     <div
                       key={idx}
-                      className="flex items-start gap-3 p-2.5 rounded-lg bg-slate-50/80 hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition-all text-sm text-slate-700 leading-relaxed"
+                      className="flex items-start gap-3 p-2.5 rounded-xl bg-darkBg-950/70 border border-slate-800 text-sm text-slate-200 leading-relaxed"
                     >
-                      <div className="w-5 h-5 rounded-full bg-agro-100 text-agro-700 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                      <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
                         {idx + 1}
                       </div>
                       <span>{item}</span>

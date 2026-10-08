@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { dashboardApi } from '../services/dashboardApi';
 import LoadingState from '../components/LoadingState';
+import { useLanguage } from '../context/LanguageContext';
 
 // Time Series Demo/Aggregated Trend Data
 const TIME_SERIES_DATA = [
@@ -58,6 +59,7 @@ const CROP_CATEGORY_DATA = [
 ];
 
 export const AnalyticsPage = () => {
+  const { t } = useLanguage();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -79,7 +81,7 @@ export const AnalyticsPage = () => {
   }, []);
 
   if (loading) {
-    return <LoadingState message="Calculating agricultural telemetry and AI models..." />;
+    return <LoadingState message={t('common.loading', 'Calculating agricultural telemetry and AI models...')} />;
   }
 
   return (
@@ -89,13 +91,13 @@ export const AnalyticsPage = () => {
         <div>
           <div className="inline-flex items-center gap-1.5 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-1">
             <BarChart3 className="w-3.5 h-3.5" />
-            <span>Telemetry & Autonomous Telemetry</span>
+            <span>{t('common.badge', 'Telemetry & Autonomous Intelligence')}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-display font-extrabold text-white">
-            Agricultural Intelligence Analytics
+            {t('analytics.title', 'Agricultural Intelligence Analytics')}
           </h1>
           <p className="text-sm text-slate-400 mt-1">
-            Real-time charts tracking multi-agent execution times, risk distribution, and confidence scores.
+            {t('analytics.subtitle', 'Real-time charts tracking multi-agent execution times, risk distribution, and confidence scores.')}
           </p>
         </div>
       </div>
@@ -156,7 +158,7 @@ export const AnalyticsPage = () => {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="font-bold text-base text-white font-display">
-                Advisories Generated Over Time
+                {t('analytics.trendTitle', 'Advisories Generated Over Time')}
               </h3>
               <p className="text-xs text-slate-400">
                 Monthly diagnostic inquiry velocity and confidence
@@ -202,7 +204,7 @@ export const AnalyticsPage = () => {
         {/* Risk Distribution (Pie/Donut Chart) */}
         <div className="lg:col-span-5 hologram-card rounded-3xl p-6 border border-emerald-500/25">
           <h3 className="font-bold text-base text-white font-display">
-            Risk Severity Breakdown
+            {t('analytics.riskTitle', 'Risk Severity Breakdown')}
           </h3>
           <p className="text-xs text-slate-400">
             Categorization by immediate agricultural severity
@@ -244,7 +246,7 @@ export const AnalyticsPage = () => {
         {/* Agent Execution Times (Bar Chart) */}
         <div className="lg:col-span-6 hologram-card rounded-3xl p-6 border border-emerald-500/25">
           <h3 className="font-bold text-base text-white font-display">
-            Agent Execution Latency (ms)
+            {t('analytics.executionTitle', 'Agent Execution Latency (ms)')}
           </h3>
           <p className="text-xs text-slate-400">
             Time required for each specialized agent stage to complete

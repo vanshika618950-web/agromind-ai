@@ -1,8 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sprout, AlertTriangle, Cpu, Activity, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Sprout, AlertTriangle, Cpu, Activity } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export const HeroFloatingCards = ({ mouseOffset = { x: 0, y: 0 } }) => {
+  const { t } = useLanguage();
+
   return (
     <>
       {/* Card 1: Crop Health (Top Left) */}
@@ -23,11 +26,11 @@ export const HeroFloatingCards = ({ mouseOffset = { x: 0, y: 0 } }) => {
           </div>
           <div>
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">
-              Crop Health
+              {t('home.heroCardHealth', 'Crop Health')}
             </span>
             <div className="flex items-center gap-1.5">
               <span className="text-sm font-black text-white tracking-wide">
-                OPTIMAL / GOOD
+                {t('home.heroCardHealthVal', 'OPTIMAL / GOOD')}
               </span>
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
             </div>
@@ -53,10 +56,10 @@ export const HeroFloatingCards = ({ mouseOffset = { x: 0, y: 0 } }) => {
           </div>
           <div>
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">
-              Risk Level
+              {t('home.heroCardRisk', 'Risk Level')}
             </span>
             <span className="text-sm font-black text-amber-400 tracking-wide">
-              MEDIUM RISKS
+              {t('home.heroCardRiskVal', 'MEDIUM RISKS')}
             </span>
           </div>
         </div>
@@ -80,10 +83,10 @@ export const HeroFloatingCards = ({ mouseOffset = { x: 0, y: 0 } }) => {
           </div>
           <div>
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">
-              AI Diagnostic
+              {t('home.heroCardConfidence', 'AI Diagnostic')}
             </span>
             <span className="text-sm font-black text-cyan-300 tracking-wide">
-              92% CONFIDENCE
+              {t('home.heroCardConfidenceVal', '92% CONFIDENCE')}
             </span>
           </div>
         </div>
@@ -99,22 +102,19 @@ export const HeroFloatingCards = ({ mouseOffset = { x: 0, y: 0 } }) => {
           y: { duration: 6.5, repeat: Infinity, ease: 'easeInOut', delay: 1.5 },
           x: { type: 'spring', damping: 20 },
         }}
-        className="absolute bottom-20 right-6 sm:right-12 lg:right-24 z-20 pointer-events-auto"
+        className="absolute bottom-24 right-6 sm:right-12 lg:right-24 z-20 hidden sm:block pointer-events-auto"
       >
-        <div className="hologram-card rounded-2xl p-3 sm:p-4 flex items-center gap-3 border border-emerald-400/40 shadow-glow-emerald backdrop-blur-xl">
+        <div className="hologram-card rounded-2xl p-3 sm:p-4 flex items-center gap-3 border border-emerald-500/30 shadow-glow-green backdrop-blur-xl">
           <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
             <Cpu className="w-5 h-5 text-emerald-400" />
           </div>
           <div>
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">
-              Autonomous Mesh
+              {t('home.heroCardAgents', '4 Agents')}
             </span>
-            <div className="flex items-center gap-1.5">
-              <span className="text-sm font-black text-emerald-400 tracking-wide">
-                4 AGENTS ACTIVE
-              </span>
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-            </div>
+            <span className="text-sm font-black text-emerald-400 tracking-wide">
+              {t('home.heroCardAgentsVal', 'ACTIVE')}
+            </span>
           </div>
         </div>
       </motion.div>

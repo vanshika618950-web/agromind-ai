@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Sprout, Mail, Lock, ArrowRight, AlertCircle, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
+import LanguageSelector from '../components/LanguageSelector';
 
 export const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -10,6 +12,7 @@ export const LoginPage = () => {
   const [loading, setLoading] = useState(false);
 
   const { login } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -24,7 +27,7 @@ export const LoginPage = () => {
       await login(email, password);
       navigate(from, { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || err.message || 'Login failed. Please check your credentials.');
+      setError(err.response?.data?.message || err.message || t('common.errorGeneric', 'Login failed. Please check your credentials.'));
     } finally {
       setLoading(false);
     }
@@ -38,6 +41,11 @@ export const LoginPage = () => {
 
   return (
     <div className="min-h-screen bg-darkBg-950 text-slate-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Top Language Selector */}
+      <div className="absolute top-6 right-6 z-20">
+        <LanguageSelector />
+      </div>
+
       {/* Background radial glow */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -51,12 +59,12 @@ export const LoginPage = () => {
           </span>
         </Link>
         <h2 className="mt-4 text-2xl sm:text-3xl font-display font-bold text-white">
-          Sign In to Your Farm Dashboard
+          {t('auth.loginTitle', 'Welcome Back to AgroMind AI')}
         </h2>
         <p className="mt-2 text-sm text-slate-400">
-          Or{' '}
+          {t('auth.noAccount', "Don't have an account?")}{' '}
           <Link to="/register" className="font-semibold text-emerald-400 hover:text-emerald-300">
-            create a new account
+            {t('auth.registerLink', 'Create one now')}
           </Link>
         </p>
       </div>

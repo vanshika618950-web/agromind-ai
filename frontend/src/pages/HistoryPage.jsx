@@ -12,6 +12,7 @@ import {
   Layers,
 } from 'lucide-react';
 import { advisoryApi } from '../services/advisoryApi';
+import { useLanguage } from '../context/LanguageContext';
 import RiskBadge from '../components/RiskBadge';
 import LoadingState from '../components/LoadingState';
 import EmptyState from '../components/EmptyState';
@@ -30,6 +31,7 @@ const CATEGORIES = [
 const RISK_LEVELS = ['All Risks', 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
 
 export const HistoryPage = () => {
+  const { t } = useLanguage();
   const [advisories, setAdvisories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -63,16 +65,22 @@ export const HistoryPage = () => {
     fetchAdvisories();
   };
 
+  const handleClearFilters = () => {
+    setSearch('');
+    setSelectedCategory('All Categories');
+    setSelectedRisk('All Risks');
+  };
+
   return (
     <div className="space-y-8">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-emerald-500/15">
         <div>
           <h1 className="text-2xl sm:text-3xl font-display font-extrabold text-white">
-            Advisory History & Telemetry Archive
+            {t('history.title', 'Advisory History & Telemetry Archive')}
           </h1>
           <p className="text-sm text-slate-400 mt-1">
-            Review past multi-agent diagnoses, actions, and yield recovery trajectories.
+            {t('history.subtitle', 'Review past multi-agent diagnoses, actions, and yield recovery trajectories.')}
           </p>
         </div>
 
@@ -81,7 +89,7 @@ export const HistoryPage = () => {
           className="self-start sm:self-center inline-flex items-center gap-1.5 px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold bg-emerald-500 hover:bg-emerald-400 text-black shadow-glow-green transition-all hover:scale-105"
         >
           <PlusCircle className="w-4 h-4" />
-          <span>New Advisory</span>
+          <span>{t('common.newAdvisory', 'New Advisory')}</span>
         </Link>
       </div>
 
@@ -92,7 +100,7 @@ export const HistoryPage = () => {
           <Search className="w-4 h-4 text-emerald-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search crop, symptoms, or location..."
+            placeholder={t('history.searchPlaceholder', 'Search crop, symptoms, or location...')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-emerald-500/20 bg-darkBg-950/80 text-white text-xs sm:text-sm outline-none focus:border-emerald-400 transition-all placeholder:text-slate-500"
@@ -108,7 +116,7 @@ export const HistoryPage = () => {
           >
             {CATEGORIES.map((c) => (
               <option key={c} value={c} className="bg-darkBg-900 text-white">
-                {c}
+                {c === 'All Categories' ? t('history.allCategories', 'All Categories') : c}
               </option>
             ))}
           </select>
@@ -121,7 +129,9 @@ export const HistoryPage = () => {
           >
             {RISK_LEVELS.map((r) => (
               <option key={r} value={r} className="bg-darkBg-900 text-white">
-                {r === 'All Risks' ? 'All Risks' : `${r} Risk`}
+                {r === 'All Risks'
+                  ? t('history.allRisks', 'All Risks')
+                  : t(`risk.${r.toLowerCase()}`, `${r} Risk`)}
               </option>
             ))}
           </select>
@@ -130,13 +140,14 @@ export const HistoryPage = () => {
 
       {/* Advisories Grid or Empty State */}
       {loading ? (
-        <LoadingState message="Loading archived crop records from MongoDB Atlas..." />
+        <LoadingState message={t('common.loading', 'Loading archived crop records from MongoDB Atlas...')} />
       ) : advisories.length === 0 ? (
         <EmptyState
-          title="No Advisories Match Your Filter"
-          description="Try clearing search filters or generate a new crop inquiry."
-          actionText="Clear Filters"
+          title={t('history.noAdvisories', 'No Advisories Match Your Filter')}
+          description={t('history.noAdvisoriesDesc', 'Try clearing search filters or generate a new crop inquiry.')}
+          actionText={t('history.clearFilters', 'Clear Filters')}
           actionTo="#"
+          onActionClick={handleClearFilters}
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -178,10 +189,10 @@ export const HistoryPage = () => {
                 {/* Soil & Stage info */}
                 <div className="mt-3 flex items-center gap-2 text-[11px] text-slate-400 font-medium">
                   <span className="bg-darkBg-950 px-2 py-0.5 rounded border border-slate-800">
-                    {adv.soilType}
+                    {t(`soils.${adv.soilType}`, adv.soilType)}
                   </span>
                   <span className="bg-darkBg-950 px-2 py-0.5 rounded border border-slate-800">
-                    {adv.growthStage}
+                    {t(`stages.${adv.growthStage}`, adv.growthStage)}
                   </span>
                 </div>
 
@@ -192,7 +203,7 @@ export const HistoryPage = () => {
 
                 {/* Problem Summary */}
                 <div className="mt-3.5 p-3 rounded-xl bg-darkBg-950/80 border border-emerald-500/20 text-xs text-slate-300">
-                  <span className="font-semibold text-white">Diagnosis: </span>
+                  <span className="font-semibold text-white">{t('advisory.problemAnalysisTitle', 'Diagnosis')}: </span>
                   {adv.problemAnalysis?.identifiedProblem || adv.category}
                 </div>
               </div>
@@ -203,7 +214,7 @@ export const HistoryPage = () => {
                   to={`/advisory/${adv._id}`}
                   className="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-bold bg-darkBg-950 hover:bg-emerald-500 hover:text-black text-slate-200 border border-emerald-500/30 transition-all"
                 >
-                  <span>Review Multi-Agent Advisory</span>
+                  <span>{t('history.reviewAdvisory', 'Review Multi-Agent Advisory')}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>

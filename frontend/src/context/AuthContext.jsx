@@ -47,8 +47,8 @@ export const AuthProvider = ({ children }) => {
     throw new Error(res.message || 'Login failed');
   };
 
-  const register = async (name, email, password) => {
-    const res = await authApi.register({ name, email, password });
+  const register = async (name, email, password, preferredLanguage = 'en') => {
+    const res = await authApi.register({ name, email, password, preferredLanguage });
     if (res.success && res.data) {
       setUser(res.data.user);
       setToken(res.data.token);

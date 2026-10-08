@@ -9,40 +9,43 @@ import {
   Sparkles,
   Zap,
 } from 'lucide-react';
-
-const STAGES = [
-  {
-    id: 0,
-    name: 'Problem Analyzer Agent',
-    task: 'Extracting foliar symptoms & identifying probable root causes...',
-    icon: Brain,
-    color: '#22c55e',
-  },
-  {
-    id: 1,
-    name: 'Crop Reasoning Agent',
-    task: 'Evaluating soil nutrient matrix and crop growth stage physiology...',
-    icon: Sprout,
-    color: '#06b6d4',
-  },
-  {
-    id: 2,
-    name: 'Risk Assessment Agent',
-    task: 'Calculating yield injury velocity and expert consultation thresholds...',
-    icon: ShieldAlert,
-    color: '#f59e0b',
-  },
-  {
-    id: 3,
-    name: 'Action Planner Agent',
-    task: 'Synthesizing chronological 7-day farm recovery roadmap...',
-    icon: CalendarCheck2,
-    color: '#a855f7',
-  },
-];
+import { useLanguage } from '../context/LanguageContext';
 
 export const AIProcessingModal = ({ activeStep = 0, isOpen = false }) => {
+  const { t } = useLanguage();
+
   if (!isOpen) return null;
+
+  const STAGES = [
+    {
+      id: 0,
+      name: 'Problem Analyzer Agent',
+      task: t('newAdvisory.agent1Progress', 'Understanding crop symptoms...'),
+      icon: Brain,
+      color: '#22c55e',
+    },
+    {
+      id: 1,
+      name: 'Crop Reasoning Agent',
+      task: t('newAdvisory.agent2Progress', 'Analyzing agricultural context...'),
+      icon: Sprout,
+      color: '#06b6d4',
+    },
+    {
+      id: 2,
+      name: 'Risk Assessment Agent',
+      task: t('newAdvisory.agent3Progress', 'Evaluating severity & urgency...'),
+      icon: ShieldAlert,
+      color: '#f59e0b',
+    },
+    {
+      id: 3,
+      name: 'Action Planner Agent',
+      task: t('newAdvisory.agent4Progress', 'Synthesizing action roadmap...'),
+      icon: CalendarCheck2,
+      color: '#a855f7',
+    },
+  ];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-darkBg-950/85 backdrop-blur-2xl">
@@ -59,14 +62,14 @@ export const AIProcessingModal = ({ activeStep = 0, isOpen = false }) => {
         <div className="text-center relative z-10 pb-6 border-b border-emerald-500/15">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950 border border-emerald-400/40 text-emerald-400 text-xs font-semibold mb-3">
             <Zap className="w-3.5 h-3.5 animate-pulse text-emerald-400" />
-            <span>Multi-Agent Collective Active</span>
+            <span>{t('newAdvisory.multiAgentActive', 'Multi-Agent Collective Active')}</span>
           </div>
 
           <h3 className="text-2xl sm:text-3xl font-display font-extrabold text-white">
-            AgroMind AI is thinking...
+            {t('newAdvisory.processingTitle', 'AgroMind AI is thinking...')}
           </h3>
           <p className="text-xs sm:text-sm text-slate-300 mt-1">
-            4 specialized autonomous agents collaborating on your crop inquiry
+            {t('newAdvisory.processingSubtitle', '4 specialized autonomous agents collaborating on your crop inquiry')}
           </p>
         </div>
 
@@ -116,18 +119,18 @@ export const AIProcessingModal = ({ activeStep = 0, isOpen = false }) => {
                   {isCompleted && (
                     <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded-md border border-emerald-500/30">
                       <CheckCircle2 className="w-3.5 h-3.5" />
-                      Complete
+                      {t('common.completed', 'Complete')}
                     </span>
                   )}
                   {isRunning && (
                     <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-300 bg-emerald-950/80 px-2.5 py-0.5 rounded-md border border-emerald-400/40">
                       <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                      Running
+                      {t('common.running', 'Running')}
                     </span>
                   )}
                   {isWaiting && (
                     <span className="text-[11px] font-mono text-slate-500 px-2">
-                      Waiting
+                      {t('common.waiting', 'Waiting')}
                     </span>
                   )}
                 </div>
@@ -138,7 +141,7 @@ export const AIProcessingModal = ({ activeStep = 0, isOpen = false }) => {
 
         {/* Dynamic Progress Bar */}
         <div className="mt-6 pt-4 border-t border-emerald-500/15 flex items-center justify-between text-xs text-slate-400">
-          <span>Orchestration Progress</span>
+          <span>{t('newAdvisory.orchestrationProgress', 'Orchestration Progress')}</span>
           <span className="font-mono text-emerald-400 font-bold">
             {Math.min(100, (activeStep + 1) * 25)}%
           </span>

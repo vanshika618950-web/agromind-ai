@@ -12,9 +12,11 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 export const Sidebar = ({ isOpen, setIsOpen }) => {
   const { user, logout } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -25,29 +27,29 @@ export const Sidebar = ({ isOpen, setIsOpen }) => {
   const navItems = [
     {
       to: '/dashboard',
-      label: 'Dashboard',
+      label: t('common.dashboard', 'Dashboard'),
       icon: LayoutDashboard,
       end: true,
     },
     {
       to: '/advisory/new',
-      label: 'New Advisory',
+      label: t('common.newAdvisory', 'New Advisory'),
       icon: PlusCircle,
       highlight: true,
     },
     {
       to: '/analytics',
-      label: 'AI Analytics',
+      label: t('common.analytics', 'AI Analytics'),
       icon: BarChart3,
     },
     {
       to: '/history',
-      label: 'Advisory History',
+      label: t('common.history', 'Advisory History'),
       icon: History,
     },
     {
       to: '/profile',
-      label: 'User Profile',
+      label: t('common.profile', 'User Profile'),
       icon: User,
     },
   ];

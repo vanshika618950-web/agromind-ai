@@ -34,9 +34,10 @@ export const advisorySchema = z.object({
   }),
   symptoms: z
     .string()
-    .min(5, { message: 'Please describe the symptoms in at least 5 characters' })
     .max(3000, { message: 'Symptoms description cannot exceed 3000 characters' })
-    .trim(),
+    .trim()
+    .optional()
+    .default('General crop health inspection and seasonal advisory'),
   irrigation: z.enum([
     'Rainfed',
     'Drip',
@@ -57,4 +58,7 @@ export const advisorySchema = z.object({
     .max(1500, { message: 'Additional information cannot exceed 1500 characters' })
     .optional()
     .default(''),
+  language: z.enum(['en', 'te', 'hi'], {
+    errorMap: () => ({ message: 'Language must be en, te, or hi' }),
+  }).default('en'),
 });

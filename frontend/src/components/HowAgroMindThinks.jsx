@@ -5,74 +5,68 @@ import {
   Sprout,
   ShieldAlert,
   ClipboardList,
-  CheckCircle2,
   Sparkles,
-  ArrowUpRight,
 } from 'lucide-react';
-
-const CARDS = [
-  {
-    number: '01',
-    name: 'Problem Analyzer',
-    icon: Brain,
-    description: 'Understands crop symptoms and identifies possible causes.',
-    status: 'Autonomous • Step 1',
-    tag: 'Symptom Extraction',
-    color: 'emerald',
-    borderColor: 'border-emerald-500/30',
-    glowColor: 'rgba(16, 185, 129, 0.25)',
-  },
-  {
-    number: '02',
-    name: 'Crop Reasoning',
-    icon: Sprout,
-    description: 'Combines crop, soil, growth stage and environmental context.',
-    status: 'Agronomic • Step 2',
-    tag: 'Physiology Modeling',
-    color: 'teal',
-    borderColor: 'border-teal-500/30',
-    glowColor: 'rgba(20, 184, 166, 0.25)',
-  },
-  {
-    number: '03',
-    name: 'Risk Assessment',
-    icon: ShieldAlert,
-    description: 'Evaluates severity, urgency and agricultural risk.',
-    status: 'Evaluative • Step 3',
-    tag: 'Yield Loss Impact',
-    color: 'amber',
-    borderColor: 'border-amber-500/30',
-    glowColor: 'rgba(245, 158, 11, 0.25)',
-  },
-  {
-    number: '04',
-    name: 'Action Planner',
-    icon: ClipboardList,
-    description: 'Creates prioritized actions for today and the coming days.',
-    status: 'Chronological • Step 4',
-    tag: '7-Day Farm Roadmap',
-    color: 'cyan',
-    borderColor: 'border-cyan-500/30',
-    glowColor: 'rgba(6, 182, 212, 0.25)',
-  },
-];
+import { useLanguage } from '../context/LanguageContext';
 
 export const HowAgroMindThinks = () => {
+  const { t } = useLanguage();
+
+  const CARDS = [
+    {
+      number: '01',
+      name: t('home.agent1Title', 'Problem Analyzer'),
+      icon: Brain,
+      description: t('home.agent1Desc', 'Understands crop symptoms and identifies possible causes.'),
+      status: 'Step 1',
+      tag: t('newAdvisory.agent1Progress', 'Symptom Extraction'),
+      borderColor: 'border-emerald-500/30',
+      glowColor: 'rgba(16, 185, 129, 0.25)',
+    },
+    {
+      number: '02',
+      name: t('home.agent2Title', 'Crop Reasoning'),
+      icon: Sprout,
+      description: t('home.agent2Desc', 'Combines crop, soil, growth stage and environmental context.'),
+      status: 'Step 2',
+      tag: t('newAdvisory.agent2Progress', 'Physiology Modeling'),
+      borderColor: 'border-teal-500/30',
+      glowColor: 'rgba(20, 184, 166, 0.25)',
+    },
+    {
+      number: '03',
+      name: t('home.agent3Title', 'Risk Assessment'),
+      icon: ShieldAlert,
+      description: t('home.agent3Desc', 'Evaluates severity, urgency and agricultural risk.'),
+      status: 'Step 3',
+      tag: t('newAdvisory.agent3Progress', 'Yield Loss Impact'),
+      borderColor: 'border-amber-500/30',
+      glowColor: 'rgba(245, 158, 11, 0.25)',
+    },
+    {
+      number: '04',
+      name: t('home.agent4Title', 'Action Planner'),
+      icon: ClipboardList,
+      description: t('home.agent4Desc', 'Creates prioritized actions for today and the coming days.'),
+      status: 'Step 4',
+      tag: t('newAdvisory.agent4Progress', '7-Day Farm Roadmap'),
+      borderColor: 'border-cyan-500/30',
+      glowColor: 'rgba(6, 182, 212, 0.25)',
+    },
+  ];
+
   return (
     <section id="how-it-thinks" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="text-center max-w-3xl mx-auto mb-16">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 text-xs font-semibold mb-3">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Cognitive Multi-Agent Pipeline</span>
+          <span>{t('home.howItThinksTitle', 'How AgroMind Thinks')}</span>
         </div>
         <h2 className="text-3xl sm:text-5xl font-display font-extrabold text-white tracking-tight">
-          How AgroMind{' '}
-          <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-lime-400 bg-clip-text text-transparent">
-            Thinks & Reasons
-          </span>
+          {t('home.howItThinksTitle', 'How AgroMind Thinks')}
         </h2>
         <p className="mt-3 text-sm sm:text-base text-slate-400">
-          A four-stage collaborative pipeline that breaks complex farming decisions into dedicated AI responsibilities.
+          {t('home.howItThinksSubtitle', 'Four specialized AI agents collaborate autonomously to formulate precise agricultural decisions.')}
         </p>
       </div>
 
@@ -98,36 +92,30 @@ export const HowAgroMindThinks = () => {
               <div>
                 {/* Header: Number & Tag */}
                 <div className="flex items-center justify-between mb-5">
-                  <span className="text-xs font-mono font-bold text-emerald-400 px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-500/20">
-                    STAGE {card.number}
+                  <span className="font-mono text-xs font-extrabold text-emerald-400 bg-emerald-950/80 px-2.5 py-1 rounded-lg border border-emerald-500/30">
+                    {card.number}
                   </span>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                    {card.tag}
+                  <span className="text-[11px] font-mono font-semibold text-slate-400">
+                    {card.status}
                   </span>
                 </div>
 
-                {/* 3D Glass Icon Container */}
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-darkBg-950 to-emerald-950/80 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-5 shadow-glass group-hover:scale-110 transition-transform duration-300">
-                  <Icon className="w-7 h-7" />
+                {/* Agent Icon & Name */}
+                <div className="w-12 h-12 rounded-2xl bg-darkBg-900 border border-emerald-500/30 flex items-center justify-center mb-4 text-emerald-400 group-hover:scale-110 transition-transform shadow-glass">
+                  <Icon className="w-6 h-6" />
                 </div>
 
-                {/* Agent Name & Description */}
-                <h3 className="text-xl font-bold font-display text-white group-hover:text-emerald-300 transition-colors">
+                <h3 className="text-xl font-bold font-display text-white mb-2">
                   {card.name}
                 </h3>
-                <p className="mt-2.5 text-sm text-slate-300 leading-relaxed">
-                  "{card.description}"
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
+                  {card.description}
                 </p>
               </div>
 
-              {/* Status Footer */}
-              <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs">
-                <span className="text-slate-400 font-mono text-[11px]">
-                  {card.status}
-                </span>
-                <span className="flex items-center gap-1 text-emerald-400 font-semibold text-[11px]">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>Ready</span>
+              <div className="pt-4 border-t border-emerald-500/15 flex items-center justify-between text-xs">
+                <span className="text-emerald-400/90 font-medium truncate">
+                  {card.tag}
                 </span>
               </div>
             </motion.div>

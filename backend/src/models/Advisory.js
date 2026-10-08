@@ -9,6 +9,25 @@ const recommendationSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const prescriptionItemSchema = new mongoose.Schema(
+  {
+    medicineName: { type: String, required: true },
+    category: {
+      type: String,
+      default: 'Curative Treatment',
+    },
+    activeIngredient: { type: String, default: '' },
+    dosage: { type: String, required: true },
+    applicationMethod: { type: String, default: 'Foliar Spray' },
+    timing: { type: String, default: 'Early morning (6:30 - 9:00 AM) or late afternoon' },
+    waitingPeriod: { type: String, default: '7 days (Pre-Harvest Interval)' },
+    targetPathogen: { type: String, default: '' },
+    safetyPrecautions: { type: String, default: 'Wear mask and protective gloves during application.' },
+    organicAlternative: { type: String, default: '' },
+  },
+  { _id: false }
+);
+
 const advisorySchema = new mongoose.Schema(
   {
     userId: {
@@ -39,7 +58,7 @@ const advisorySchema = new mongoose.Schema(
     },
     symptoms: {
       type: String,
-      required: true,
+      default: 'General crop health inspection and seasonal advisory',
       trim: true,
     },
     irrigation: {
@@ -56,6 +75,11 @@ const advisorySchema = new mongoose.Schema(
       type: String,
       default: '',
       trim: true,
+    },
+    language: {
+      type: String,
+      enum: ['en', 'te', 'hi'],
+      default: 'en',
     },
 
     category: {
@@ -112,6 +136,14 @@ const advisorySchema = new mongoose.Schema(
     recommendations: [recommendationSchema],
     irrigationAdvice: { type: String, default: '' },
     nutrientAdvice: { type: String, default: '' },
+
+    prescription: {
+      diagnosis: { type: String, default: '' },
+      items: [prescriptionItemSchema],
+      applicationWindow: { type: String, default: 'Spray during calm early morning (6:30 - 9:00 AM) or late afternoon. Avoid spraying in intense afternoon sun or rainy conditions.' },
+      tankMixCompatibility: { type: String, default: 'Do not combine biological agents (Trichoderma/Pseudomonas) in the same tank with chemical fungicides. Always conduct a small jar test before mixing foliar fertilizers with crop protection chemicals.' },
+      safetyNotice: { type: String, default: 'Always wear protective mask and gloves. Keep children and domestic animals away from spray area for 24 hours. Wash spray equipment thoroughly.' },
+    },
 
     riskLevel: {
       type: String,

@@ -5,58 +5,79 @@ import {
   Cpu,
   ShieldCheck,
   CalendarCheck2,
-  ChevronRight,
   Sparkles,
 } from 'lucide-react';
-
-const STAGES = [
-  {
-    step: '01',
-    title: 'FARMER INPUT',
-    icon: FileText,
-    color: 'emerald',
-    badge: 'Context Intake',
-    items: ['Crop & Variety', 'Soil Matrix', 'Location / Climate', 'Symptom Details', 'Irrigation History'],
-  },
-  {
-    step: '02',
-    title: 'AI AGENTS',
-    icon: Cpu,
-    color: 'teal',
-    badge: 'Orchestration',
-    items: ['Problem Analyzer', 'Crop Reasoning', 'Multi-Agent Validation', 'Confidence Scoring'],
-  },
-  {
-    step: '03',
-    title: 'RISK ANALYSIS',
-    icon: ShieldCheck,
-    color: 'amber',
-    badge: 'Urgency Matrix',
-    items: ['Disease Progression', 'Pest Pressure', 'Yield Penalty Risk', 'Expert Intervention Flag'],
-  },
-  {
-    step: '04',
-    title: 'ACTION PLAN',
-    icon: CalendarCheck2,
-    color: 'cyan',
-    badge: '7-Day Execution',
-    items: ['Immediate Checklist', 'Today\'s Interventions', 'Day 3 & 7 Reassessment', 'Preventive Defense'],
-  },
-];
+import { useLanguage } from '../context/LanguageContext';
 
 export const VisualAIWorkflow = () => {
+  const { t } = useLanguage();
+
+  const STAGES = [
+    {
+      step: '01',
+      title: t('home.step1Title', 'FARMER INPUT'),
+      icon: FileText,
+      color: 'emerald',
+      badge: 'Context Intake',
+      items: [
+        t('newAdvisory.cropLabel', 'Crop & Variety'),
+        t('newAdvisory.soilLabel', 'Soil Matrix'),
+        t('newAdvisory.locationLabel', 'Location / Climate'),
+        t('newAdvisory.symptomsLabel', 'Symptom Details'),
+      ],
+    },
+    {
+      step: '02',
+      title: t('home.step2Title', 'AI AGENTS'),
+      icon: Cpu,
+      color: 'teal',
+      badge: 'Orchestration',
+      items: [
+        t('home.agent1Title', 'Problem Analyzer'),
+        t('home.agent2Title', 'Crop Reasoning'),
+        t('newAdvisory.multiAgentActive', 'Multi-Agent Validation'),
+        t('common.confidence', 'Confidence Scoring'),
+      ],
+    },
+    {
+      step: '03',
+      title: t('home.step3Title', 'RISK ANALYSIS'),
+      icon: ShieldCheck,
+      color: 'amber',
+      badge: 'Urgency Matrix',
+      items: [
+        t('risk.level', 'Severity Calculation'),
+        t('advisory.keyRiskDrivers', 'Risk Progression'),
+        t('advisory.riskEvaluation', 'Impact Assessment'),
+      ],
+    },
+    {
+      step: '04',
+      title: t('home.step4Title', 'ACTION PLAN'),
+      icon: CalendarCheck2,
+      color: 'cyan',
+      badge: '7-Day Execution',
+      items: [
+        t('advisory.today', 'Today\'s Interventions'),
+        t('advisory.next3Days', 'Next 3 Days Tuning'),
+        t('advisory.next7Days', 'Next 7 Days Recovery'),
+        t('advisory.prevention', 'Preventive Defense'),
+      ],
+    },
+  ];
+
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="text-center max-w-3xl mx-auto mb-14">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 text-xs font-semibold mb-3">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Deterministic Pipeline</span>
+          <span>{t('home.workflowTitle', 'Autonomous Multi-Agent Workflow')}</span>
         </div>
         <h2 className="text-3xl sm:text-5xl font-display font-extrabold text-white tracking-tight">
-          Autonomous Crop Intelligence Workflow
+          {t('home.workflowTitle', 'Autonomous Multi-Agent Workflow')}
         </h2>
         <p className="mt-3 text-sm sm:text-base text-slate-400">
-          Transforming scattered field observations into structured, chronological agricultural recovery plans.
+          {t('home.workflowSubtitle', 'How farmer observations transform into scientific action steps.')}
         </p>
       </div>
 
@@ -98,7 +119,7 @@ export const VisualAIWorkflow = () => {
                         className="flex items-center gap-2 text-xs text-slate-300 bg-darkBg-950/60 p-2 rounded-xl border border-slate-800/80"
                       >
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
-                        <span>{item}</span>
+                        <span className="truncate">{item}</span>
                       </li>
                     ))}
                   </ul>
