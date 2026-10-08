@@ -14,6 +14,7 @@ import {
   CheckCircle2,
   Brain,
   ShieldCheck,
+  ShieldAlert,
   Sparkles,
   HelpCircle,
   Clock,
@@ -85,24 +86,43 @@ export const AdvisoryDetailPage = () => {
     );
   }
 
-  const { advisory, agentLogs = [] } = data;
+  const advisory = data?.advisory || data || {};
+  const agentLogs = data?.agentLogs || [];
   const pAnalysis = advisory.problemAnalysis || {};
   const cReasoning = advisory.cropReasoning || {};
   const rAssessment = advisory.riskAssessment || {};
   const aPlan = advisory.actionPlan || {};
 
   // Formulate dynamic probability bars for possible causes
-  const causesWithPercentages = (pAnalysis.possibleCauses || [
-    'Nutrient Deficiency',
-    'Water Stress',
-    'Fungal Infection',
-  ]).map((cause, index) => {
+  const rawCauses = Array.isArray(pAnalysis.possibleCauses) && pAnalysis.possibleCauses.length > 0
+    ? pAnalysis.possibleCauses
+    : ['Nutrient Deficiency', 'Water Stress', 'Fungal Infection'];
+
+  const causesWithPercentages = rawCauses.map((cause, index) => {
     const defaultScores = [78, 64, 42, 35];
+    const title = typeof cause === 'string' ? cause : (cause?.title || cause?.name || cause?.cause || 'Agricultural factor');
+    const percent = typeof cause === 'object' && typeof cause?.percent === 'number'
+      ? cause.percent
+      : (defaultScores[index] || Math.max(30, 80 - index * 15));
     return {
-      title: cause,
-      percent: defaultScores[index] || 50 - index * 10,
+      title,
+      percent,
     };
   });
+
+  // Helper to extract timeline items whether aPlan is an object or array
+  const getPlanItems = (key, fallback) => {
+    if (Array.isArray(aPlan[key]) && aPlan[key].length > 0) {
+      return aPlan[key];
+    }
+    if (Array.isArray(aPlan) && aPlan.length > 0) {
+      const match = aPlan.find((p) => p.timeframe?.toLowerCase() === key.toLowerCase() || p.phase?.toLowerCase() === key.toLowerCase());
+      if (match) {
+        return [match.action || match.title || match.description];
+      }
+    }
+    return fallback;
+  };
 
   return (
     <div className="space-y-8 print:p-0">
@@ -441,7 +461,7 @@ export const AdvisoryDetailPage = () => {
             </span>
             <h4 className="font-bold text-white text-sm">Immediate Actions</h4>
             <ul className="text-xs text-slate-300 space-y-2">
-              {(aPlan.today?.length ? aPlan.today : ['Inspect affected plants closely', 'Verify soil moisture']).map((item, idx) => (
+              {getPlanItems('today', ['Inspect affected plants closely', 'Verify soil moisture']).map((item, idx) => (
                 <li key={idx} className="flex items-start gap-2">
                   <span className="text-emerald-400 font-bold">•</span>
                   <span>{item}</span>
@@ -463,7 +483,7 @@ export const AdvisoryDetailPage = () => {
             </span>
             <h4 className="font-bold text-white text-sm">Monitoring & Tuning</h4>
             <ul className="text-xs text-slate-300 space-y-2">
-              {(aPlan.next3Days?.length ? aPlan.next3Days : ['Monitor symptoms & soil moisture', 'Observe newly emerging shoots']).map((item, idx) => (
+              {getPlanItems('next3Days', ['Monitor symptoms & soil moisture', 'Observe newly emerging shoots']).map((item, idx) => (
                 <li key={idx} className="flex items-start gap-2">
                   <span className="text-cyan-400 font-bold">•</span>
                   <span>{item}</span>
@@ -485,7 +505,7 @@ export const AdvisoryDetailPage = () => {
             </span>
             <h4 className="font-bold text-white text-sm">Recovery Check</h4>
             <ul className="text-xs text-slate-300 space-y-2">
-              {(aPlan.next7Days?.length ? aPlan.next7Days : ['Evaluate overall crop recovery', 'Reassess foliar vigor and greening']).map((item, idx) => (
+              {getPlanItems('next7Days', ['Evaluate overall crop recovery', 'Reassess foliar vigor and greening']).map((item, idx) => (
                 <li key={idx} className="flex items-start gap-2">
                   <span className="text-lime-400 font-bold">•</span>
                   <span>{item}</span>
@@ -507,7 +527,7 @@ export const AdvisoryDetailPage = () => {
             </span>
             <h4 className="font-bold text-white text-sm">Long-term Health</h4>
             <ul className="text-xs text-slate-300 space-y-2">
-              {(aPlan.preventive?.length ? aPlan.preventive : ['Maintain regular crop monitoring', 'Adopt balanced seasonal crop rotation']).map((item, idx) => (
+              {getPlanItems('preventive', ['Maintain regular crop monitoring', 'Adopt balanced seasonal crop rotation']).map((item, idx) => (
                 <li key={idx} className="flex items-start gap-2">
                   <span className="text-purple-400 font-bold">•</span>
                   <span>{item}</span>
