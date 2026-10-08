@@ -1,27 +1,26 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Sprout,
   Send,
   AlertCircle,
-  HelpCircle,
   Sparkles,
   Layers,
   Brain,
-  ShieldAlert,
+  ShieldCheck,
   CalendarCheck2,
   CheckCircle2,
+  Zap,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { advisoryApi } from '../services/advisoryApi';
-import AgentWorkflowTimeline from '../components/AgentWorkflowTimeline';
+import AIProcessingModal from '../components/AIProcessingModal';
 
 const CROPS = [
+  'Tomato',
   'Rice',
   'Wheat',
   'Cotton',
   'Maize',
-  'Tomato',
   'Potato',
   'Groundnut',
   'Soybean',
@@ -30,8 +29,8 @@ const CROPS = [
 ];
 
 const SOILS = [
-  'Black Soil',
   'Red Soil',
+  'Black Soil',
   'Sandy Soil',
   'Clay Soil',
   'Loamy Soil',
@@ -40,19 +39,19 @@ const SOILS = [
 ];
 
 const STAGES = [
+  'Flowering',
   'Seedling',
   'Vegetative',
-  'Flowering',
   'Fruiting',
   'Harvest',
   'Unknown',
 ];
 
 const IRRIGATIONS = [
-  'Rainfed',
   'Drip',
-  'Sprinkler',
   'Flood/Furrow',
+  'Sprinkler',
+  'Rainfed',
   'Other',
   'Unknown',
 ];
@@ -61,20 +60,20 @@ export const NewAdvisoryPage = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    crop: 'Rice',
+    crop: 'Tomato',
     customCrop: '',
-    location: '',
-    soilType: 'Black Soil',
-    growthStage: 'Vegetative',
-    symptoms: '',
-    irrigation: 'Flood/Furrow',
-    weather: '',
-    additionalInformation: '',
+    location: 'Telangana',
+    soilType: 'Red Soil',
+    growthStage: 'Flowering',
+    symptoms: 'Yellow leaves and dark brown spots appearing along lower foliage.',
+    irrigation: 'Drip',
+    weather: 'Hot and dry, 34°C',
+    additionalInformation: 'Drip irrigation paused for 2 days during maintenance.',
   });
 
   const [error, setError] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [simulatedAgentStep, setSimulatedAgentStep] = useState(0);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -83,15 +82,15 @@ export const NewAdvisoryPage = () => {
 
   const handlePreFillExample = () => {
     setFormData({
-      crop: 'Cotton',
+      crop: 'Tomato',
       customCrop: '',
-      location: 'Telangana, Warangal',
-      soilType: 'Black Soil',
+      location: 'Telangana',
+      soilType: 'Red Soil',
       growthStage: 'Flowering',
-      symptoms: 'Older leaves display yellowing along leaf margins and inward veins. Some squares and early bolls dropping after recent heavy rain.',
+      symptoms: 'Yellow leaves and spots on lower foliage. Mild blossom drop.',
       irrigation: 'Drip',
-      weather: 'Humid, 32°C, intermittent sunshine',
-      additionalInformation: 'Drip fertigation was paused during the heavy rains 3 days ago.',
+      weather: 'Hot and dry, 34°C',
+      additionalInformation: 'Observed yellowing spreading upward over the last 48 hours.',
     });
     setError('');
   };
@@ -114,17 +113,17 @@ export const NewAdvisoryPage = () => {
     }
 
     if (!formData.symptoms.trim() || formData.symptoms.trim().length < 5) {
-      setError('Please provide detailed symptoms (at least 5 characters).');
+      setError('Please describe symptoms in at least 5 characters.');
       return;
     }
 
-    setSubmitting(true);
-    setSimulatedAgentStep(0);
+    setIsProcessing(true);
+    setActiveStep(0);
 
-    // Dynamic pipeline step simulation for visual feedback
-    const stepInterval = setInterval(() => {
-      setSimulatedAgentStep((prev) => (prev < 3 ? prev + 1 : prev));
-    }, 1200);
+    // Cinematic sequential multi-agent execution step simulation
+    const timer1 = setTimeout(() => setActiveStep(1), 1100);
+    const timer2 = setTimeout(() => setActiveStep(2), 2200);
+    const timer3 = setTimeout(() => setActiveStep(3), 3300);
 
     try {
       const payload = {
@@ -140,24 +139,26 @@ export const NewAdvisoryPage = () => {
 
       const res = await advisoryApi.createAdvisory(payload);
 
-      clearInterval(stepInterval);
-      setSimulatedAgentStep(4);
+      // Complete all steps
+      setActiveStep(4);
 
       // Trigger celebratory confetti
       confetti({
-        particleCount: 75,
-        spread: 70,
+        particleCount: 80,
+        spread: 80,
         origin: { y: 0.6 },
-        colors: ['#16a34a', '#4ade80', '#22c55e', '#f59e0b'],
+        colors: ['#22c55e', '#10b981', '#06b6d4', '#a3e635'],
       });
 
-      // Quick pause so user sees final completed state
       setTimeout(() => {
+        setIsProcessing(false);
         navigate(`/advisory/${res.data.advisory._id}`);
-      }, 700);
+      }, 1000);
     } catch (err) {
-      clearInterval(stepInterval);
-      setSubmitting(false);
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+      setIsProcessing(false);
       setError(
         err.response?.data?.message ||
           err.message ||
@@ -168,80 +169,58 @@ export const NewAdvisoryPage = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+      {/* Cinematic AI Processing Experience Modal */}
+      <AIProcessingModal isOpen={isProcessing} activeStep={activeStep} />
+
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-emerald-500/15">
         <div>
-          <div className="inline-flex items-center gap-1.5 text-agro-700 text-xs font-bold uppercase tracking-wider mb-1">
+          <div className="inline-flex items-center gap-1.5 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-1">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Multi-Agent Diagnostic Intake</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-display font-extrabold text-slate-900">
-            Generate AI Crop Advisory
+          <h1 className="text-2xl sm:text-3xl font-display font-extrabold text-white">
+            Start New Crop Advisory
           </h1>
-          <p className="text-sm text-slate-600 mt-1">
-            Provide crop observations to trigger autonomous collaborative reasoning across 4 agents.
+          <p className="text-sm text-slate-400 mt-1">
+            Enter field observations to trigger autonomous collaborative reasoning across 4 AI agents.
           </p>
         </div>
 
         <button
           type="button"
           onClick={handlePreFillExample}
-          className="self-start sm:self-center px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-agro-50 hover:bg-agro-100 text-agro-800 border border-agro-200 transition-colors"
+          className="self-start sm:self-center px-4 py-2 rounded-xl text-xs font-bold bg-darkBg-900 hover:bg-emerald-950 text-emerald-400 border border-emerald-500/30 transition-all shadow-glass"
         >
-          Pre-fill Example Data
+          Pre-fill Example (Tomato / Telangana)
         </button>
       </div>
 
-      {/* Live AI Processing Overlay if Submitting */}
-      {submitting && (
-        <div className="space-y-6 animate-fade-in">
-          <div className="p-4 rounded-xl bg-agro-50 border border-agro-200 flex items-center justify-between text-agro-900">
-            <div className="flex items-center gap-3">
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-agro-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-agro-500" />
-              </span>
-              <span className="font-bold text-sm">
-                AI Agent Collective Actively Reasoning...
-              </span>
-            </div>
-            <span className="text-xs font-mono text-agro-700 font-semibold">
-              Step {Math.min(4, simulatedAgentStep + 1)} of 4
-            </span>
-          </div>
-
-          <AgentWorkflowTimeline
-            activeStep={simulatedAgentStep}
-            isLiveSimulation={true}
-          />
-        </div>
-      )}
-
-      {/* Advisory Input Form */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-elevated">
+      {/* Futuristic Form Card */}
+      <div className="hologram-card rounded-3xl p-6 sm:p-8 border border-emerald-500/25 shadow-glow-emerald">
         {error && (
-          <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 flex items-start gap-3 text-rose-800 text-sm">
-            <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-rose-600" />
+          <div className="mb-6 p-4 rounded-2xl bg-rose-950/60 border border-rose-500/40 flex items-start gap-3 text-rose-300 text-sm">
+            <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-rose-400" />
             <span>{error}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Row 1: Crop Selection + Custom Crop + Location */}
+          {/* Row 1: Crop + Location */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                Target Crop <span className="text-rose-500">*</span>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                Crop <span className="text-emerald-400">*</span>
               </label>
               <select
                 name="crop"
                 value={formData.crop}
                 onChange={handleChange}
-                disabled={submitting}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-agro-500/20 focus:border-agro-500 text-sm font-medium outline-none transition-all"
+                disabled={isProcessing}
+                className="w-full px-4 py-3 rounded-2xl border border-emerald-500/20 bg-darkBg-950/80 text-white font-medium text-sm focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
               >
                 {CROPS.map((c) => (
-                  <option key={c} value={c}>
+                  <option key={c} value={c} className="bg-darkBg-900 text-white">
                     {c}
                   </option>
                 ))}
@@ -252,29 +231,29 @@ export const NewAdvisoryPage = () => {
                   <input
                     type="text"
                     name="customCrop"
-                    placeholder="Enter custom crop name..."
+                    placeholder="Enter custom crop..."
                     value={formData.customCrop}
                     onChange={handleChange}
-                    disabled={submitting}
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-agro-500/20 focus:border-agro-500 text-sm outline-none transition-all"
+                    disabled={isProcessing}
+                    className="w-full px-4 py-2.5 rounded-2xl border border-emerald-500/20 bg-darkBg-950 text-white text-sm outline-none"
                   />
                 </div>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                Location / District <span className="text-rose-500">*</span>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                Location <span className="text-emerald-400">*</span>
               </label>
               <input
                 type="text"
                 name="location"
                 required
-                placeholder="e.g. Telangana, Warangal"
+                placeholder="e.g. Telangana"
                 value={formData.location}
                 onChange={handleChange}
-                disabled={submitting}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-agro-500/20 focus:border-agro-500 text-sm font-medium outline-none transition-all"
+                disabled={isProcessing}
+                className="w-full px-4 py-3 rounded-2xl border border-emerald-500/20 bg-darkBg-950/80 text-white font-medium text-sm focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
               />
             </div>
           </div>
@@ -282,18 +261,18 @@ export const NewAdvisoryPage = () => {
           {/* Row 2: Soil Type, Growth Stage, Irrigation Method */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                Soil Type <span className="text-rose-500">*</span>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                Soil Type <span className="text-emerald-400">*</span>
               </label>
               <select
                 name="soilType"
                 value={formData.soilType}
                 onChange={handleChange}
-                disabled={submitting}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-agro-500/20 focus:border-agro-500 text-sm font-medium outline-none transition-all"
+                disabled={isProcessing}
+                className="w-full px-4 py-3 rounded-2xl border border-emerald-500/20 bg-darkBg-950/80 text-white font-medium text-sm focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
               >
                 {SOILS.map((s) => (
-                  <option key={s} value={s}>
+                  <option key={s} value={s} className="bg-darkBg-900 text-white">
                     {s}
                   </option>
                 ))}
@@ -301,18 +280,18 @@ export const NewAdvisoryPage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                Growth Stage <span className="text-rose-500">*</span>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                Growth Stage <span className="text-emerald-400">*</span>
               </label>
               <select
                 name="growthStage"
                 value={formData.growthStage}
                 onChange={handleChange}
-                disabled={submitting}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-agro-500/20 focus:border-agro-500 text-sm font-medium outline-none transition-all"
+                disabled={isProcessing}
+                className="w-full px-4 py-3 rounded-2xl border border-emerald-500/20 bg-darkBg-950/80 text-white font-medium text-sm focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
               >
                 {STAGES.map((st) => (
-                  <option key={st} value={st}>
+                  <option key={st} value={st} className="bg-darkBg-900 text-white">
                     {st}
                   </option>
                 ))}
@@ -320,18 +299,18 @@ export const NewAdvisoryPage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                Irrigation Method <span className="text-rose-500">*</span>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                Irrigation Method <span className="text-emerald-400">*</span>
               </label>
               <select
                 name="irrigation"
                 value={formData.irrigation}
                 onChange={handleChange}
-                disabled={submitting}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-agro-500/20 focus:border-agro-500 text-sm font-medium outline-none transition-all"
+                disabled={isProcessing}
+                className="w-full px-4 py-3 rounded-2xl border border-emerald-500/20 bg-darkBg-950/80 text-white font-medium text-sm focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
               >
                 {IRRIGATIONS.map((irr) => (
-                  <option key={irr} value={irr}>
+                  <option key={irr} value={irr} className="bg-darkBg-900 text-white">
                     {irr}
                   </option>
                 ))}
@@ -339,84 +318,72 @@ export const NewAdvisoryPage = () => {
             </div>
           </div>
 
-          {/* Row 3: Observed Symptoms (Large textarea) */}
+          {/* Row 3: Symptoms */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
-                Observed Crop Symptoms <span className="text-rose-500">*</span>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                Symptoms <span className="text-emerald-400">*</span>
               </label>
-              <span className="text-xs text-slate-400">
-                Be as descriptive as possible
-              </span>
+              <span className="text-xs text-slate-400">Be descriptive</span>
             </div>
             <textarea
               name="symptoms"
               required
               rows={4}
-              placeholder="Describe color changes, leaf spots, wilting, curling, pest presence, affected plant portions, or spreading patterns..."
+              placeholder="Describe color changes, leaf spots, wilting, curling, affected plant portions, or spreading velocity..."
               value={formData.symptoms}
               onChange={handleChange}
-              disabled={submitting}
-              className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-agro-500/20 focus:border-agro-500 text-sm outline-none transition-all resize-y"
+              disabled={isProcessing}
+              className="w-full px-4 py-3 rounded-2xl border border-emerald-500/20 bg-darkBg-950/80 text-white text-sm focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all resize-y"
             />
           </div>
 
-          {/* Row 4: Weather & Additional Information */}
+          {/* Row 4: Weather & Additional Notes */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                Weather / Environmental Context <span className="text-slate-400 font-normal">(Optional)</span>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                Weather Conditions <span className="text-slate-500 font-normal">(Optional)</span>
               </label>
               <input
                 type="text"
                 name="weather"
-                placeholder="e.g. Recent unseasonal rain, dry spell, 36°C heat wave"
+                placeholder="e.g. Hot and dry"
                 value={formData.weather}
                 onChange={handleChange}
-                disabled={submitting}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-agro-500/20 focus:border-agro-500 text-sm outline-none transition-all"
+                disabled={isProcessing}
+                className="w-full px-4 py-3 rounded-2xl border border-emerald-500/20 bg-darkBg-950/80 text-white text-sm outline-none focus:border-emerald-400"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                Recent Inputs / Observations <span className="text-slate-400 font-normal">(Optional)</span>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                Additional Information <span className="text-slate-500 font-normal">(Optional)</span>
               </label>
               <input
                 type="text"
                 name="additionalInformation"
-                placeholder="e.g. Applied urea 4 days ago, noticed spots spreading north to south"
+                placeholder="e.g. Yellowing started 3 days ago"
                 value={formData.additionalInformation}
                 onChange={handleChange}
-                disabled={submitting}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-agro-500/20 focus:border-agro-500 text-sm outline-none transition-all"
+                disabled={isProcessing}
+                className="w-full px-4 py-3 rounded-2xl border border-emerald-500/20 bg-darkBg-950/80 text-white text-sm outline-none focus:border-emerald-400"
               />
             </div>
           </div>
 
           {/* Submit Action */}
-          <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <Layers className="w-4 h-4 text-agro-600" />
+          <div className="pt-4 border-t border-emerald-500/15 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2 text-xs text-slate-400">
+              <Zap className="w-4 h-4 text-emerald-400 animate-pulse" />
               <span>Orchestrates: Problem Analyzer → Reasoning → Risk → Action Planner</span>
             </div>
 
             <button
               type="submit"
-              disabled={submitting}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-xl bg-agro-600 hover:bg-agro-700 text-white font-bold text-sm shadow-elevated hover:shadow-glow transition-all disabled:opacity-50"
+              disabled={isProcessing}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-lime-400 hover:from-emerald-400 hover:to-lime-300 text-black font-extrabold text-sm sm:text-base shadow-glow-green transition-all hover:scale-105 disabled:opacity-50"
             >
-              {submitting ? (
-                <>
-                  <Sparkles className="w-4 h-4 animate-spin text-white" />
-                  <span>Orchestrating AI Agents...</span>
-                </>
-              ) : (
-                <>
-                  <Send className="w-4 h-4" />
-                  <span>Generate AI Advisory</span>
-                </>
-              )}
+              <span>Run AI Analysis →</span>
             </button>
           </div>
         </form>

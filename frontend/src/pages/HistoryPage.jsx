@@ -66,19 +66,19 @@ export const HistoryPage = () => {
   return (
     <div className="space-y-8">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-emerald-500/15">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-display font-extrabold text-slate-900">
-            Advisory History & Archive
+          <h1 className="text-2xl sm:text-3xl font-display font-extrabold text-white">
+            Advisory History & Telemetry Archive
           </h1>
-          <p className="text-sm text-slate-600 mt-1">
+          <p className="text-sm text-slate-400 mt-1">
             Review past multi-agent diagnoses, actions, and yield recovery trajectories.
           </p>
         </div>
 
         <Link
           to="/advisory/new"
-          className="self-start sm:self-center inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-agro-600 hover:bg-agro-700 text-white shadow-soft hover:shadow-glow transition-all"
+          className="self-start sm:self-center inline-flex items-center gap-1.5 px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold bg-emerald-500 hover:bg-emerald-400 text-black shadow-glow-green transition-all hover:scale-105"
         >
           <PlusCircle className="w-4 h-4" />
           <span>New Advisory</span>
@@ -86,16 +86,16 @@ export const HistoryPage = () => {
       </div>
 
       {/* Filters & Search Row */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-soft flex flex-col md:flex-row items-center gap-4">
+      <div className="hologram-card rounded-2xl p-4 sm:p-5 border border-emerald-500/20 shadow-glass flex flex-col md:flex-row items-center gap-4">
         {/* Search Input */}
         <form onSubmit={handleSearchSubmit} className="flex-1 w-full relative">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-emerald-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search crop, symptoms, or location..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm outline-none focus:border-agro-500 focus:ring-2 focus:ring-agro-500/20 transition-all"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-emerald-500/20 bg-darkBg-950/80 text-white text-xs sm:text-sm outline-none focus:border-emerald-400 transition-all placeholder:text-slate-500"
           />
         </form>
 
@@ -104,10 +104,10 @@ export const HistoryPage = () => {
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="w-full sm:w-auto px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-xs sm:text-sm outline-none focus:border-agro-500 focus:ring-2 focus:ring-agro-500/20 font-medium"
+            className="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-emerald-500/20 bg-darkBg-950 text-white text-xs sm:text-sm outline-none focus:border-emerald-400 font-medium"
           >
             {CATEGORIES.map((c) => (
-              <option key={c} value={c}>
+              <option key={c} value={c} className="bg-darkBg-900 text-white">
                 {c}
               </option>
             ))}
@@ -117,10 +117,10 @@ export const HistoryPage = () => {
           <select
             value={selectedRisk}
             onChange={(e) => setSelectedRisk(e.target.value)}
-            className="w-full sm:w-auto px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-xs sm:text-sm outline-none focus:border-agro-500 focus:ring-2 focus:ring-agro-500/20 font-medium"
+            className="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-emerald-500/20 bg-darkBg-950 text-white text-xs sm:text-sm outline-none focus:border-emerald-400 font-medium"
           >
             {RISK_LEVELS.map((r) => (
-              <option key={r} value={r}>
+              <option key={r} value={r} className="bg-darkBg-900 text-white">
                 {r === 'All Risks' ? 'All Risks' : `${r} Risk`}
               </option>
             ))}
@@ -130,11 +130,11 @@ export const HistoryPage = () => {
 
       {/* Advisories Grid or Empty State */}
       {loading ? (
-        <LoadingState message="Loading archived crop records..." />
+        <LoadingState message="Loading archived crop records from MongoDB Atlas..." />
       ) : advisories.length === 0 ? (
         <EmptyState
           title="No Advisories Match Your Filter"
-          description="Try clearing your search filters or generate a new crop inquiry."
+          description="Try clearing search filters or generate a new crop inquiry."
           actionText="Clear Filters"
           actionTo="#"
         />
@@ -143,30 +143,30 @@ export const HistoryPage = () => {
           {advisories.map((adv) => (
             <div
               key={adv._id}
-              className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-soft hover:shadow-elevated hover:border-agro-300 transition-all duration-200 flex flex-col justify-between group"
+              className="hologram-card rounded-3xl p-6 border border-emerald-500/20 hover:border-emerald-400/40 transition-all flex flex-col justify-between group"
             >
               <div>
                 {/* Header Row */}
                 <div className="flex items-center justify-between gap-2 mb-3">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-agro-700 bg-agro-50 px-2 py-0.5 rounded border border-agro-200">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-500/30">
                     {adv.category}
                   </span>
                   <RiskBadge level={adv.riskLevel} size="sm" />
                 </div>
 
                 {/* Crop & Location */}
-                <h3 className="text-xl font-bold font-display text-slate-900 group-hover:text-agro-700 transition-colors">
+                <h3 className="text-xl font-bold font-display text-white group-hover:text-emerald-300 transition-colors">
                   {adv.crop}
                 </h3>
 
-                <div className="mt-1 flex items-center gap-3 text-xs text-slate-500">
+                <div className="mt-1 flex items-center gap-3 text-xs text-slate-400">
                   <span className="flex items-center gap-1">
-                    <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                    <MapPin className="w-3.5 h-3.5 text-emerald-400" />
                     {adv.location}
                   </span>
                   <span>•</span>
                   <span className="flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5 text-slate-400" />
+                    <Clock className="w-3.5 h-3.5 text-slate-500" />
                     {new Date(adv.createdAt).toLocaleDateString(undefined, {
                       month: 'short',
                       day: 'numeric',
@@ -176,32 +176,32 @@ export const HistoryPage = () => {
                 </div>
 
                 {/* Soil & Stage info */}
-                <div className="mt-3 flex items-center gap-2 text-[11px] text-slate-500 font-medium">
-                  <span className="bg-slate-100 px-2 py-0.5 rounded">
+                <div className="mt-3 flex items-center gap-2 text-[11px] text-slate-400 font-medium">
+                  <span className="bg-darkBg-950 px-2 py-0.5 rounded border border-slate-800">
                     {adv.soilType}
                   </span>
-                  <span className="bg-slate-100 px-2 py-0.5 rounded">
+                  <span className="bg-darkBg-950 px-2 py-0.5 rounded border border-slate-800">
                     {adv.growthStage}
                   </span>
                 </div>
 
                 {/* Symptoms Snippet */}
-                <p className="mt-3 text-xs text-slate-600 line-clamp-2 italic leading-relaxed">
+                <p className="mt-3 text-xs text-slate-300 line-clamp-2 italic leading-relaxed">
                   "{adv.symptoms}"
                 </p>
 
                 {/* Problem Summary */}
-                <div className="mt-3 p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700">
-                  <span className="font-semibold text-slate-900">Diagnosis: </span>
+                <div className="mt-3.5 p-3 rounded-xl bg-darkBg-950/80 border border-emerald-500/20 text-xs text-slate-300">
+                  <span className="font-semibold text-white">Diagnosis: </span>
                   {adv.problemAnalysis?.identifiedProblem || adv.category}
                 </div>
               </div>
 
               {/* View Advisory Link */}
-              <div className="mt-5 pt-4 border-t border-slate-100">
+              <div className="mt-6 pt-4 border-t border-emerald-500/15">
                 <Link
                   to={`/advisory/${adv._id}`}
-                  className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-4 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-agro-600 hover:text-white text-slate-700 transition-all"
+                  className="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-bold bg-darkBg-950 hover:bg-emerald-500 hover:text-black text-slate-200 border border-emerald-500/30 transition-all"
                 >
                   <span>Review Multi-Agent Advisory</span>
                   <ArrowRight className="w-3.5 h-3.5" />

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Outlet, Link } from 'react-router-dom';
-import { Menu, Bell, Sprout, PlusCircle } from 'lucide-react';
+import { Menu, Bell, PlusCircle, Settings, User } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import { useAuth } from '../context/AuthContext';
 
@@ -8,50 +8,70 @@ export const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user } = useAuth();
 
+  const firstName = user?.name ? user.name.split(' ')[0] : 'Akshaya';
+
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="min-h-screen bg-darkBg-950 text-slate-100 flex">
       {/* Sidebar Navigation */}
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 lg:pl-64">
         {/* Top Header Bar */}
-        <header className="h-16 sm:h-20 bg-white border-b border-slate-200/80 sticky top-0 z-30 flex items-center justify-between px-4 sm:px-8">
+        <header className="h-16 sm:h-20 bg-darkBg-900/80 backdrop-blur-xl border-b border-emerald-500/15 sticky top-0 z-30 flex items-center justify-between px-4 sm:px-8">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="p-2 -ml-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 lg:hidden"
+              className="p-2 -ml-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 lg:hidden"
             >
               <Menu className="w-6 h-6" />
             </button>
-            <div className="hidden sm:block">
-              <span className="text-xs font-semibold uppercase tracking-wider text-agro-700 bg-agro-50 px-2.5 py-1 rounded-md border border-agro-200">
-                AI Agricultural Decision Support
-              </span>
+            <div>
+              <h2 className="text-sm sm:text-base font-bold text-white font-display">
+                Good Morning, {firstName} 👋
+              </h2>
+              <p className="text-[11px] text-emerald-400/90 font-medium">
+                Your AI farming assistant is ready.
+              </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4">
             <Link
               to="/advisory/new"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-agro-600 hover:bg-agro-700 text-white shadow-soft transition-all hover:shadow-glow"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-emerald-500 hover:bg-emerald-400 text-black shadow-glow-green transition-all hover:scale-105"
             >
               <PlusCircle className="w-4 h-4" />
               <span>New Advisory</span>
             </Link>
 
-            <div className="h-6 w-px bg-slate-200 hidden sm:block" />
+            <div className="h-6 w-px bg-slate-800 hidden sm:block" />
+
+            {/* Notification & Settings Icon Buttons */}
+            <div className="flex items-center gap-1 text-slate-400">
+              <button
+                title="Notifications"
+                className="p-2 rounded-xl hover:text-white hover:bg-slate-800/60 transition-colors relative"
+              >
+                <Bell className="w-4 h-4" />
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 absolute top-2 right-2 animate-ping" />
+              </button>
+              <Link
+                to="/profile"
+                title="Settings"
+                className="p-2 rounded-xl hover:text-white hover:bg-slate-800/60 transition-colors"
+              >
+                <Settings className="w-4 h-4" />
+              </Link>
+            </div>
 
             <Link
               to="/profile"
-              className="flex items-center gap-2 p-1 sm:px-2 sm:py-1 rounded-lg hover:bg-slate-100 transition-colors"
+              className="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-800/40 transition-colors"
             >
-              <div className="w-8 h-8 rounded-full bg-agro-100 text-agro-800 font-bold text-xs flex items-center justify-center border border-agro-300">
-                {user?.name ? user.name.charAt(0).toUpperCase() : 'F'}
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-300 font-bold text-xs flex items-center justify-center border border-emerald-500/40 shadow-glow-green">
+                {firstName.charAt(0).toUpperCase()}
               </div>
-              <span className="hidden md:block text-sm font-semibold text-slate-700">
-                {user?.name?.split(' ')[0] || 'Farmer'}
-              </span>
             </Link>
           </div>
         </header>

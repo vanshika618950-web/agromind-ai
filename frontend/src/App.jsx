@@ -14,6 +14,7 @@ import DashboardPage from './pages/DashboardPage';
 import NewAdvisoryPage from './pages/NewAdvisoryPage';
 import AdvisoryDetailPage from './pages/AdvisoryDetailPage';
 import HistoryPage from './pages/HistoryPage';
+import AnalyticsPage from './pages/AnalyticsPage';
 import ProfilePage from './pages/ProfilePage';
 
 export function App() {
@@ -37,6 +38,7 @@ export function App() {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/advisory/new" element={<NewAdvisoryPage />} />
             <Route path="/advisory/:id" element={<AdvisoryDetailPage />} />
+            <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/profile" element={<ProfilePage />} />
           </Route>

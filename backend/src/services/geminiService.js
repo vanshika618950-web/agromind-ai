@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { GoogleGenAI } from '@google/genai';
 
 const SYSTEM_PROMPT = `You are AgroMind AI — an advanced agricultural decision-support AI system designed to assist farmers and agronomists.
@@ -18,12 +19,14 @@ class GeminiService {
   constructor() {
     this.apiKey = process.env.GEMINI_API_KEY || '';
     this.client = null;
-    this.modelName = 'gemini-2.5-flash';
+    this.primaryModel = 'gemini-3.8-flash';
+    this.fallbackModels = [];
+    this.circuitOpenUntil = 0; // Circuit breaker timestamp
 
     if (this.apiKey && this.apiKey.trim() !== '') {
       try {
         this.client = new GoogleGenAI({ apiKey: this.apiKey });
-        console.log(' Google GenAI initialized with official @google/genai SDK.');
+        console.log('⚡ Google GenAI initialized with official @google/genai SDK (Model: gemini-3.8-flash).');
       } catch (err) {
         console.warn('⚠️ Google GenAI initialization failed:', err.message);
       }
@@ -48,10 +51,15 @@ class GeminiService {
     return JSON.parse(cleaned);
   }
 
-  // Generate structured response via Gemini API with retry logic
+  // Generate structured response via Gemini API with fast timeout & expert rule fallback
   async generateStructuredResponse(agentPrompt, schemaDescription) {
     if (!this.isConfigured()) {
       return null; // Signals orchestrator to invoke expert agronomic rule engine
+    }
+
+    // Circuit breaker check: If remote service recently timed out or hit capacity limit, bypass immediately
+    if (this.circuitOpenUntil && Date.now() < this.circuitOpenUntil) {
+      return null;
     }
 
     const fullPrompt = `${agentPrompt}
@@ -60,45 +68,40 @@ IMPORTANT: Provide your response as a valid JSON object matching this schema:
 ${schemaDescription}
 Output only the raw JSON object. Do not wrap in markdown or backticks.`;
 
-    try {
-      const response = await this.client.models.generateContent({
-        model: this.modelName,
-        contents: fullPrompt,
-        config: {
-          systemInstruction: SYSTEM_PROMPT,
-          responseMimeType: 'application/json',
-          temperature: 0.2,
-        },
-      });
+    const modelsToTry = [this.primaryModel, ...this.fallbackModels];
 
-      const text = response.text || (response.candidates?.[0]?.content?.parts?.[0]?.text);
-      return this.cleanAndParseJson(text);
-    } catch (primaryError) {
-      console.warn('⚠️ Primary Gemini call failed or returned unparseable output:', primaryError.message);
-
-      // Retry once with explicit correction instruction
+    for (const model of modelsToTry) {
       try {
-        console.log('🔄 Retrying Gemini call with strict formatting constraint...');
-        const retryPrompt = `${fullPrompt}
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('AI request timeout (3s limit reached)')), 3000)
+        );
 
-CORRECTION NOTICE: Your previous output was not valid JSON. You MUST return ONLY a parseable JSON object matching the requested schema.`;
-
-        const retryResponse = await this.client.models.generateContent({
-          model: this.modelName,
-          contents: retryPrompt,
+        const apiPromise = this.client.models.generateContent({
+          model,
+          contents: fullPrompt,
           config: {
             systemInstruction: SYSTEM_PROMPT,
-            temperature: 0.1,
+            responseMimeType: 'application/json',
+            temperature: 0.2,
           },
         });
 
-        const retryText = retryResponse.text || (retryResponse.candidates?.[0]?.content?.parts?.[0]?.text);
-        return this.cleanAndParseJson(retryText);
-      } catch (retryError) {
-        console.error('❌ Gemini retry failed as well:', retryError.message);
-        return null; // Fall back to expert agronomic engine
+        const response = await Promise.race([apiPromise, timeoutPromise]);
+        const text = response.text || (response.candidates?.[0]?.content?.parts?.[0]?.text);
+        if (text) {
+          // Success: reset circuit breaker
+          this.circuitOpenUntil = 0;
+          return this.cleanAndParseJson(text);
+        }
+      } catch (err) {
+        // Trip circuit breaker for 60 seconds to provide instantaneous zero-lag fallback
+        this.circuitOpenUntil = Date.now() + 60000;
+        console.warn(`⚠️ Model ${model} call note: ${err.message}. Circuit open for 60s -> switching seamlessly to Agronomic Expert Engine.`);
+        break;
       }
     }
+
+    return null;
   }
 }
 
