@@ -1,0 +1,27 @@
+{
+  "name": "agromind-ai",
+  "version": "1.0.0",
+  "description": "AgroMind AI — Agentic Crop Advisory & Decision Support System",
+  "scripts": {
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build": "cd frontend && npm run build",
+    "seed": "cd backend && npm run seed",
+    "test": "cd backend && npm test"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "keywords": [
+    "agriculture",
+    "ai-agents",
+    "gemini",
+    "crop-advisory",
+    "agentic-ai",
+    "farmer-support"
+  ],
+  "author": "AgroMind AI Team",
+  "license": "MIT"
+}
